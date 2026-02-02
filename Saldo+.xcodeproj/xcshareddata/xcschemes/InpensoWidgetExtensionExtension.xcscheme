@@ -19,7 +19,7 @@
                BlueprintIdentifier = "714E83162DBE3597005ED7BB"
                BuildableName = "InpensoWidgetExtensionExtension.appex"
                BlueprintName = "InpensoWidgetExtensionExtension"
-               ReferencedContainer = "container:Inpenso.xcodeproj">
+               ReferencedContainer = "container:Saldo+.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -33,7 +33,7 @@
                BlueprintIdentifier = "714E82F22DBE3124005ED7BB"
                BuildableName = "Inpenso.app"
                BlueprintName = "Inpenso"
-               ReferencedContainer = "container:Inpenso.xcodeproj">
+               ReferencedContainer = "container:Saldo+.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -64,7 +64,7 @@
             BlueprintIdentifier = "714E82F22DBE3124005ED7BB"
             BuildableName = "Inpenso.app"
             BlueprintName = "Inpenso"
-            ReferencedContainer = "container:Inpenso.xcodeproj">
+            ReferencedContainer = "container:Saldo+.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -100,7 +100,7 @@
             BlueprintIdentifier = "714E82F22DBE3124005ED7BB"
             BuildableName = "Inpenso.app"
             BlueprintName = "Inpenso"
-            ReferencedContainer = "container:Inpenso.xcodeproj">
+            ReferencedContainer = "container:Saldo+.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
