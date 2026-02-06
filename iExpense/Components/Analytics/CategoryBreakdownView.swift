@@ -80,7 +80,7 @@ struct CategoryBreakdownView: View {
                     Text(amount, format: .currency(code: currencyCode))
                         .font(.subheadline)
                     
-                    Text("\(Int((amount / totalSpent) * 100))%")
+                    Text(String(format: NSLocalizedString("%d%%", comment: "Percentage value"), Int((amount / totalSpent) * 100)))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

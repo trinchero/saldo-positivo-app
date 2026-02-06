@@ -17,34 +17,34 @@ enum Category: String, CaseIterable, Codable, AppEnum {
 
     var displayName: String {
         switch self {
-        case .food: return "Food"
-        case .eatingOut: return "Eating Out"
-        case .rent: return "Rent"
-        case .shopping: return "Shopping"
-        case .entertainment: return "Entertainment"
-        case .transportation: return "Transportation"
-        case .utilities: return "Utilities"
-        case .subscriptions: return "Subscriptions"
-        case .healthcare: return "Healthcare"
-        case .education: return "Education"
-        case .others: return "Others"
+        case .food: return NSLocalizedString("Food", comment: "Category")
+        case .eatingOut: return NSLocalizedString("Eating Out", comment: "Category")
+        case .rent: return NSLocalizedString("Rent", comment: "Category")
+        case .shopping: return NSLocalizedString("Shopping", comment: "Category")
+        case .entertainment: return NSLocalizedString("Entertainment", comment: "Category")
+        case .transportation: return NSLocalizedString("Transportation", comment: "Category")
+        case .utilities: return NSLocalizedString("Utilities", comment: "Category")
+        case .subscriptions: return NSLocalizedString("Subscriptions", comment: "Category")
+        case .healthcare: return NSLocalizedString("Healthcare", comment: "Category")
+        case .education: return NSLocalizedString("Education", comment: "Category")
+        case .others: return NSLocalizedString("Others", comment: "Category")
         }
     }
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Category"
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: LocalizedStringResource("Category"))
 
     static var caseDisplayRepresentations: [Self: DisplayRepresentation] = [
-        .food: "Food",
-        .eatingOut: "Eating Out",
-        .rent: "Rent",
-        .shopping: "Shopping",
-        .entertainment: "Entertainment",
-        .transportation: "Transportation",
-        .utilities: "Utilities",
-        .subscriptions: "Subscriptions",
-        .healthcare: "Healthcare",
-        .education: "Education",
-        .others: "Others"
+        .food: DisplayRepresentation(title: LocalizedStringResource("Food")),
+        .eatingOut: DisplayRepresentation(title: LocalizedStringResource("Eating Out")),
+        .rent: DisplayRepresentation(title: LocalizedStringResource("Rent")),
+        .shopping: DisplayRepresentation(title: LocalizedStringResource("Shopping")),
+        .entertainment: DisplayRepresentation(title: LocalizedStringResource("Entertainment")),
+        .transportation: DisplayRepresentation(title: LocalizedStringResource("Transportation")),
+        .utilities: DisplayRepresentation(title: LocalizedStringResource("Utilities")),
+        .subscriptions: DisplayRepresentation(title: LocalizedStringResource("Subscriptions")),
+        .healthcare: DisplayRepresentation(title: LocalizedStringResource("Healthcare")),
+        .education: DisplayRepresentation(title: LocalizedStringResource("Education")),
+        .others: DisplayRepresentation(title: LocalizedStringResource("Others"))
     ]
 }
 
@@ -76,4 +76,3 @@ extension Category {
         }
     }
 }
-

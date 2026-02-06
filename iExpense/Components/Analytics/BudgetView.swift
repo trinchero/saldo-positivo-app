@@ -114,13 +114,13 @@ struct BudgetStatusView: View {
                 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("\(Int(progress * 100))% Used")
+                        Text(String(format: NSLocalizedString("%d%% Used", comment: "Budget used percentage"), Int(progress * 100)))
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         
                         Spacer()
                         
-                        Text("\(Int((1 - progress) * 100))% Remaining")
+                        Text(String(format: NSLocalizedString("%d%% Remaining", comment: "Budget remaining percentage"), Int((1 - progress) * 100)))
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
@@ -176,7 +176,7 @@ struct BudgetStatusView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             
-                            Text("\(daysRemainingInMonth) days")
+                            Text(String(format: NSLocalizedString("%d days", comment: "Number of days"), daysRemainingInMonth))
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
                         }
@@ -267,7 +267,7 @@ struct BudgetRecommendationsView: View {
                         Text("To Get Back on Track")
                             .font(.subheadline)
                         
-                        Text("You need to spend \(currentBudget * 0.9 - totalSpent, format: .currency(code: currencyCode)) less than budgeted for the rest of the month.")
+                        Text(String(format: NSLocalizedString("You need to spend %@ less than budgeted for the rest of the month.", comment: "Budget recommendation"), (currentBudget * 0.9 - totalSpent).formatted(.currency(code: currencyCode))))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -285,11 +285,11 @@ struct BudgetRecommendationsView: View {
                                 .font(.system(size: 15, weight: .semibold))
                             
                             if suggestedBudget > currentBudget {
-                                Text("(+\(Int((suggestedBudget - currentBudget) / currentBudget * 100))%)")
+                                Text(String(format: NSLocalizedString("(+%d%%)", comment: "Positive percentage change"), Int((suggestedBudget - currentBudget) / currentBudget * 100)))
                                     .font(.caption)
                                     .foregroundColor(.orange)
                             } else {
-                                Text("(-\(Int((currentBudget - suggestedBudget) / currentBudget * 100))%)")
+                                Text(String(format: NSLocalizedString("(-%d%%)", comment: "Negative percentage change"), Int((currentBudget - suggestedBudget) / currentBudget * 100)))
                                     .font(.caption)
                                     .foregroundColor(.accentColor)
                             }
@@ -372,7 +372,7 @@ struct BudgetHistoryView: View {
                     let onBudgetMonths = complianceData.filter { $0.compliancePercent <= 100 }.count
                     let totalMonths = complianceData.count
                     
-                    Text("\(onBudgetMonths) of \(totalMonths) months on or under budget")
+                    Text(String(format: NSLocalizedString("%d of %d months on or under budget", comment: "Budget compliance summary"), onBudgetMonths, totalMonths))
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.top, 8)

@@ -268,7 +268,7 @@ struct ExpensesListView: View {
             // Total amount for selected month
             HStack(spacing: 12) {
                 VStack(alignment: .leading,     spacing: 4) {
-                    Text("Total for \(Calendar.current.monthSymbols[selectedMonth - 1])")
+                    Text(String(format: NSLocalizedString("Total for %@", comment: "Total for month"), Calendar.current.monthSymbols[selectedMonth - 1]))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
@@ -383,7 +383,7 @@ struct ExpensesListView: View {
                 }
                 .padding(.top, 8)
             } else {
-                Text("Add your first expense for \(Calendar.current.monthSymbols[selectedMonth - 1]) \(String(selectedYear))")
+                Text(String(format: NSLocalizedString("Add your first expense for %@ %@", comment: "Add first expense for month and year"), Calendar.current.monthSymbols[selectedMonth - 1], String(selectedYear)))
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)

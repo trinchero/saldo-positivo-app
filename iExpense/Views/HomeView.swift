@@ -99,13 +99,13 @@ struct HomeView: View {
                     
                     // Budget info
                     HStack {
-                        Text("\(Int(progress * 100))% of budget")
+                        Text(String(format: NSLocalizedString("%d%% of budget", comment: "Budget progress percentage"), Int(progress * 100)))
                             .font(.caption)
                             .foregroundColor(.secondary)
                         
                         Spacer()
                         
-                        Text("\(analyticsViewModel.daysRemainingInMonth) days left")
+                        Text(String(format: NSLocalizedString("%d days left", comment: "Days remaining in month"), analyticsViewModel.daysRemainingInMonth))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -142,10 +142,10 @@ struct HomeView: View {
                 let totalRecentSpending = recentSpending.reduce(0.0) { $0 + $1.amount }
                 
                 if totalRecentSpending <= 0 {
-                    Text("No spending in the last \(recentDaysToShow) days")
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.vertical)
+                Text(String(format: NSLocalizedString("No spending in the last %d days", comment: "No spending in recent days"), recentDaysToShow))
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical)
                         .transaction { transaction in
                             transaction.animation = nil
                         }
@@ -194,9 +194,9 @@ struct HomeView: View {
                         .chartYScale(domain: 0...(max(maxValue * 1.2, analyticsViewModel.averageDailySpend * 1.2, 1)))
                         
                         // Add a note about the data
-                        Text("Showing spending for the last \(recentDaysToShow) days")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                Text(String(format: NSLocalizedString("Showing spending for the last %d days", comment: "Showing spending for recent days"), recentDaysToShow))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
@@ -278,7 +278,7 @@ struct HomeView: View {
                                     .fontWeight(.semibold)
                                 
                                 if analyticsViewModel.totalSpent > 0 {
-                                    Text("\(Int((amount / analyticsViewModel.totalSpent) * 100))%")
+                                    Text(String(format: NSLocalizedString("%d%%", comment: "Percentage value"), Int((amount / analyticsViewModel.totalSpent) * 100)))
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                 }

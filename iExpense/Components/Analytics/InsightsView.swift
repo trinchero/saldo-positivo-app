@@ -51,9 +51,9 @@ struct KeyStatisticsView: View {
                     
                     VStack(alignment: .trailing, spacing: 4) {
                         if totalSpent > 0 {
-                            Text("\(Int((amount / totalSpent) * 100))% of total")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                        Text(String(format: NSLocalizedString("%d%% of total", comment: "Percent of total"), Int((amount / totalSpent) * 100)))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                         }
                         
                         Text(amount, format: .currency(code: currencyCode))

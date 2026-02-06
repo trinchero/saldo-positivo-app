@@ -8,9 +8,9 @@ enum AppTheme: String, CaseIterable, Identifiable {
     
     var displayName: String {
         switch self {
-        case .light: return "Light"
-        case .dark: return "Dark"
-        case .system: return "System"
+        case .light: return NSLocalizedString("Light", comment: "Light theme")
+        case .dark: return NSLocalizedString("Dark", comment: "Dark theme")
+        case .system: return NSLocalizedString("System", comment: "System theme")
         }
     }
     
@@ -19,6 +19,30 @@ enum AppTheme: String, CaseIterable, Identifiable {
         case .light: return .light
         case .dark: return .dark
         case .system: return nil
+        }
+    }
+}
+
+enum AppLanguage: String, CaseIterable, Identifiable {
+    case english
+    case spanish
+    case italian
+
+    var id: String { self.rawValue }
+
+    var displayName: String {
+        switch self {
+        case .english: return NSLocalizedString("English (Standard)", comment: "English language")
+        case .spanish: return NSLocalizedString("Spanish", comment: "Spanish language")
+        case .italian: return NSLocalizedString("Italian", comment: "Italian language")
+        }
+    }
+
+    var localeIdentifier: String {
+        switch self {
+        case .english: return "en"
+        case .spanish: return "es"
+        case .italian: return "it"
         }
     }
 }
@@ -63,6 +87,12 @@ class SettingsViewModel: ObservableObject {
             UserDefaults.standard.set(selectedTheme.rawValue, forKey: "selectedTheme")
         }
     }
+
+    @Published var selectedLanguage: AppLanguage {
+        didSet {
+            UserDefaults.standard.set(selectedLanguage.rawValue, forKey: "selectedLanguage")
+        }
+    }
     
     @Published var exportFileName: String = "iExpense_export_\(Date().formatted(.dateTime.year().month().day()))"
     
@@ -93,6 +123,9 @@ class SettingsViewModel: ObservableObject {
         
         let savedTheme = UserDefaults.standard.string(forKey: "selectedTheme")
         self.selectedTheme = AppTheme(rawValue: savedTheme ?? "system") ?? .system
+
+        let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage")
+        self.selectedLanguage = AppLanguage(rawValue: savedLanguage ?? "english") ?? .english
     }
     
     func exportData() -> URL? {

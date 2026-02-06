@@ -317,24 +317,24 @@ class AnalyticsViewModel: ObservableObject {
             if percentOfBudgetUsed >= 90 {
                 newInsights.append(SpendingInsight(
                     type: .negative,
-                    title: "Budget Alert",
-                    description: "You've used \(Int(percentOfBudgetUsed))% of your monthly budget.",
+                    title: NSLocalizedString("Budget Alert", comment: "Insight title"),
+                    description: String(format: NSLocalizedString("You've used %d%% of your monthly budget.", comment: "Budget used insight"), Int(percentOfBudgetUsed)),
                     icon: "exclamationmark.triangle",
                     color: .red
                 ))
             } else if percentOfBudgetUsed >= 75 {
                 newInsights.append(SpendingInsight(
                     type: .neutral,
-                    title: "Budget Notice",
-                    description: "You've used \(Int(percentOfBudgetUsed))% of your monthly budget.",
+                    title: NSLocalizedString("Budget Notice", comment: "Insight title"),
+                    description: String(format: NSLocalizedString("You've used %d%% of your monthly budget.", comment: "Budget used insight"), Int(percentOfBudgetUsed)),
                     icon: "bell",
                     color: .orange
                 ))
             } else if daysRemainingInMonth < 7 && percentOfBudgetUsed < 60 {
                 newInsights.append(SpendingInsight(
                     type: .positive,
-                    title: "Under Budget",
-                    description: "Great job! You're under budget this month.",
+                    title: NSLocalizedString("Under Budget", comment: "Insight title"),
+                    description: NSLocalizedString("Great job! You're under budget this month.", comment: "Under budget insight"),
                     icon: "checkmark.circle",
                     color: .green
                 ))
@@ -345,8 +345,8 @@ class AnalyticsViewModel: ObservableObject {
         if let fastestGrowing = fastestGrowingCategory, fastestGrowing.1 > 30 {
             newInsights.append(SpendingInsight(
                 type: .negative,
-                title: "Spending Increase",
-                description: "\(fastestGrowing.0.displayName) spending increased by \(Int(fastestGrowing.1))% from last month.",
+                title: NSLocalizedString("Spending Increase", comment: "Insight title"),
+                description: String(format: NSLocalizedString("%@ spending increased by %d%% from last month.", comment: "Category spending increase insight"), fastestGrowing.0.displayName, Int(fastestGrowing.1)),
                 icon: "arrow.up.right",
                 color: .red
             ))
@@ -362,8 +362,8 @@ class AnalyticsViewModel: ObservableObject {
         if let bestReduction = reducedCategories.min(by: { $0.percentChange < $1.percentChange }) {
             newInsights.append(SpendingInsight(
                 type: .positive,
-                title: "Spending Decrease",
-                description: "You reduced \(bestReduction.category.displayName) spending by \(Int(abs(bestReduction.percentChange)))%.",
+                title: NSLocalizedString("Spending Decrease", comment: "Insight title"),
+                description: String(format: NSLocalizedString("You reduced %@ spending by %d%%.", comment: "Category spending decrease insight"), bestReduction.category.displayName, Int(abs(bestReduction.percentChange))),
                 icon: "arrow.down.right",
                 color: .green
             ))
@@ -379,8 +379,8 @@ class AnalyticsViewModel: ObservableObject {
             
             newInsights.append(SpendingInsight(
                 type: .negative,
-                title: "Projected Overspending",
-                description: "At this rate, you might exceed your budget by \(formattedOverage).",
+                title: NSLocalizedString("Projected Overspending", comment: "Insight title"),
+                description: String(format: NSLocalizedString("At this rate, you might exceed your budget by %@.", comment: "Projected overspending insight"), formattedOverage),
                 icon: "chart.line.uptrend.xyaxis",
                 color: .red
             ))

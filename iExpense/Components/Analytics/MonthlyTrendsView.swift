@@ -70,7 +70,7 @@ struct MonthlyTrendsView: View {
                         Image(systemName: percentChange >= 0 ? "arrow.up.right" : "arrow.down.right")
                             .foregroundColor(percentChange >= 0 ? .red : .green)
                         
-                        Text("\(abs(Int(percentChange)))% \(percentChange >= 0 ? "increase" : "decrease") over \(monthlyTrends.count) months")
+                        Text(String(format: NSLocalizedString("%d%% %@ over %d months", comment: "Percent change over months"), abs(Int(percentChange)), percentChange >= 0 ? NSLocalizedString("increase", comment: "Increase") : NSLocalizedString("decrease", comment: "Decrease"), monthlyTrends.count))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -164,7 +164,7 @@ struct CategoryTrendsView: View {
                 Image(systemName: trend.isIncreasing ? "arrow.up" : "arrow.down")
                     .foregroundColor(trend.isIncreasing ? .red : .green)
                 
-                Text("\(Int(abs(trend.percentChange)))%")
+                Text(String(format: NSLocalizedString("%d%%", comment: "Percentage value"), Int(abs(trend.percentChange))))
                     .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundColor(trend.isIncreasing ? .red : .green)

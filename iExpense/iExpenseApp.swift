@@ -21,6 +21,7 @@ struct iExpenseApp: App {
                 }
                 .environmentObject(settingsViewModel)
                 .preferredColorScheme(settingsViewModel.selectedTheme.colorScheme)
+                .environment(\.locale, Locale(identifier: settingsViewModel.selectedLanguage.localeIdentifier))
         }
     }
     

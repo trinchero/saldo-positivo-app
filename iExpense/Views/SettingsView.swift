@@ -17,6 +17,9 @@ struct SettingsView: View {
             Form {
                 // Appearance Section
                 appearanceSection
+
+                // Language Section
+                languageSection
                 
                 // Currency Section
                 currencySection
@@ -67,6 +70,12 @@ struct SettingsView: View {
             themePicker
         }
     }
+
+    private var languageSection: some View {
+        Section(header: Text("Language")) {
+            languagePicker
+        }
+    }
     
     private var themePicker: some View {
         Picker("Theme", selection: $settingsManager.selectedTheme) {
@@ -93,8 +102,18 @@ struct SettingsView: View {
     }
     
     private func currencyRow(for currency: (code: String, symbol: String, name: String)) -> some View {
-        Text("\(currency.symbol) \(currency.name) (\(currency.code))")
+        let localizedName = NSLocalizedString(currency.name, comment: "Currency name")
+        return Text("\(currency.symbol) \(localizedName) (\(currency.code))")
             .tag(currency.code)
+    }
+
+    private var languagePicker: some View {
+        Picker("Language", selection: $settingsManager.selectedLanguage) {
+            ForEach(AppLanguage.allCases) { language in
+                Text(language.displayName).tag(language)
+            }
+        }
+        .pickerStyle(.menu)
     }
     
     private var defaultSettingsSection: some View {

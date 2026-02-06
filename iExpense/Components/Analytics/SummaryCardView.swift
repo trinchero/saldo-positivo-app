@@ -74,12 +74,12 @@ struct SummaryCard: View {
             case .currency:
                 Text(value, format: .currency(code: currencyCode))
             case .percent:
-                Text("\(Int(value))%")
+                Text(String(format: NSLocalizedString("%d%%", comment: "Percentage value"), Int(value)))
                     .foregroundColor(value >= 90 ? .red : (value >= 75 ? .orange : .primary))
             case .days:
-                Text("\(Int(value)) days")
+                Text(String(format: NSLocalizedString("%d days", comment: "Number of days"), Int(value)))
             case .count:
-                Text("\(Int(value))")
+                Text(String(format: NSLocalizedString("%d", comment: "Count value"), Int(value)))
             case .noBudget:
                 Text("Not Set")
                     .foregroundColor(.gray)
