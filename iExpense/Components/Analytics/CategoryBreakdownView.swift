@@ -1,10 +1,3 @@
-//
-//  CategoryBreakdownView.swift
-//  iExpense
-//
-//  Created by Dragomir Mindrescu on 27.04.2025.
-//
-
 import SwiftUI
 import Charts
 
@@ -28,6 +21,7 @@ struct CategoryBreakdownView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Spending by Category")
                 .font(.headline)
+                .foregroundColor(.primary)
             
             if spendingByCategory.isEmpty {
                 Text("No data available")
