@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Combine
 
 // Structure to hold insight about spending
 struct SpendingInsight {
@@ -97,15 +98,28 @@ class AnalyticsViewModel: ObservableObject {
     @Published var daysRemainingInMonth: Int = 0
     
     private var expenses: [Expense] = []
+    private var cancellables = Set<AnyCancellable>()
 
     init(expenses: [Expense]) {
         self.expenses = expenses
         self.monthlyBudgets = StorageService.loadBudgets()
         calculateAnalytics()
+        NotificationCenter.default.publisher(for: .dataReset)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.handleDataReset()
+            }
+            .store(in: &cancellables)
     }
     
     func updateExpenses(_ expenses: [Expense]) {
         self.expenses = expenses
+        calculateAnalytics()
+    }
+
+    private func handleDataReset() {
+        expenses = []
+        monthlyBudgets = StorageService.loadBudgets()
         calculateAnalytics()
     }
     

@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import SwiftData
 
 enum AppTheme: String, CaseIterable, Identifiable {
     case light, dark, system
@@ -161,15 +162,48 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
-    func resetAllData() {
+    func resetAllData(using context: ModelContext? = nil) {
         StorageService.saveExpenses([])
         StorageService.saveBudgets([:])
-        
-        // Clear stored notes for expenses
+
+        // Clear stored notes and related UI state
         let defaults = UserDefaults.standard
         for key in defaults.dictionaryRepresentation().keys where key.hasPrefix("notes_") {
             defaults.removeObject(forKey: key)
         }
+        defaults.removeObject(forKey: "lastUsedCategoryKey")
+        defaults.removeObject(forKey: "lastUsedCategory")
+        defaults.removeObject(forKey: "swiftDataMigrationCompleted")
+
+        if let sharedDefaults = UserDefaults(suiteName: StorageService.appGroupID) {
+            for key in sharedDefaults.dictionaryRepresentation().keys where key.hasPrefix("notes_") {
+                sharedDefaults.removeObject(forKey: key)
+            }
+            sharedDefaults.removeObject(forKey: "lastUsedCategoryKey")
+            sharedDefaults.removeObject(forKey: "lastUsedCategory")
+        }
+
+        if let context = context {
+            do {
+                let expenseDescriptor = FetchDescriptor<ExpenseItem>()
+                let budgetDescriptor = FetchDescriptor<BudgetItem>()
+                let categoryDescriptor = FetchDescriptor<CustomCategoryItem>()
+
+                let expenses = try context.fetch(expenseDescriptor)
+                let budgets = try context.fetch(budgetDescriptor)
+                let categories = try context.fetch(categoryDescriptor)
+
+                for item in expenses { context.delete(item) }
+                for item in budgets { context.delete(item) }
+                for item in categories { context.delete(item) }
+
+                try context.save()
+            } catch {
+                // Fail silently; reset of UserDefaults is still complete.
+            }
+        }
+
+        NotificationCenter.default.post(name: .dataReset, object: nil)
     }
     
     // Static method to get app-wide settings without needing to initialize

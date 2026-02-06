@@ -1,12 +1,20 @@
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 class ExpenseViewModel: ObservableObject {
     @Published var expenses: [Expense] = []
+    private var cancellables = Set<AnyCancellable>()
     
     init() {
         loadExpenses()
+        NotificationCenter.default.publisher(for: .dataReset)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.expenses = []
+            }
+            .store(in: &cancellables)
     }
     
     func addExpense(title: String, price: Double, date: Date, category: ExpenseCategory) -> Expense {

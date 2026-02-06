@@ -6,7 +6,8 @@ struct HomeView: View {
     @ObservedObject var analyticsViewModel: AnalyticsViewModel
     @State private var showingAddExpense = false
     @State private var showingQuickAdd = false
-    @State private var showRecentExpenses = true
+    @State private var showRecentExpenses = false
+    @State private var showCategoryBreakdown = false
     @State private var animateCards = false
     @State private var selectedExpenseToEdit: Expense? = nil
     @State private var showingEditExpense = false
@@ -28,6 +29,7 @@ struct HomeView: View {
 
                     headerCard
                         .padding(.top, 10)
+                    budgetSummaryCard
                     recentSpendingCard
                     categoryBreakdownCard
                     recentExpensesSection
@@ -138,6 +140,83 @@ struct HomeView: View {
     }
     
     // MARK: - Recent Spending Card
+
+    private var budgetSummaryCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Budget Summary")
+                .font(.headline)
+            
+            if analyticsViewModel.currentBudget > 0 {
+                let progress = min(1.0, analyticsViewModel.totalSpent / analyticsViewModel.currentBudget)
+                let progressColor: Color = progress < 0.75 ? .blue : (progress < 0.9 ? .orange : .red)
+                let remaining = analyticsViewModel.currentBudget - analyticsViewModel.totalSpent
+                
+                HStack(spacing: 16) {
+                    ZStack {
+                        Circle()
+                            .stroke(Color(.systemGray5), lineWidth: 10)
+                            .frame(width: 64, height: 64)
+                        
+                        Circle()
+                            .trim(from: 0, to: progress)
+                            .stroke(progressColor, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                            .frame(width: 64, height: 64)
+                            .rotationEffect(.degrees(-90))
+                        
+                        Text("\(Int(progress * 100))%")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(progressColor)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(analyticsViewModel.totalSpent, format: .currency(code: SettingsViewModel.getAppCurrency()))
+                            .font(.headline)
+                        
+                        if remaining >= 0 {
+                            Text("Remaining")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text(remaining, format: .currency(code: SettingsViewModel.getAppCurrency()))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        } else {
+                            Text("Over Budget")
+                                .font(.caption)
+                                .foregroundColor(.red)
+                            Text(abs(remaining), format: .currency(code: SettingsViewModel.getAppCurrency()))
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                        
+                        Text(String(format: NSLocalizedString("%d days left", comment: "Days remaining in month"), analyticsViewModel.daysRemainingInMonth))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                }
+            } else {
+                HStack(spacing: 8) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.orange)
+                    Text("Budget not set for this month")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 6)
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(.secondarySystemBackground))
+                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+        )
+        .offset(y: animateCards ? 0 : -10)
+        .opacity(animateCards ? 1 : 0)
+    }
     
     private var recentSpendingCard: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -254,69 +333,85 @@ struct HomeView: View {
     
     private var categoryBreakdownCard: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Spending by Category")
-                .font(.headline)
-            
-            if analyticsViewModel.spendingByCategory.isEmpty {
-                Text("No category data available")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical)
-            } else {
-                let sortedCategories = analyticsViewModel.spendingByCategory
-                    .sorted(by: { $0.value > $1.value })
-                    .prefix(5) // Show top 5 categories
+            HStack {
+                Text("Spending by Category")
+                    .font(.headline)
                 
-                VStack(spacing: 12) {
-                    ForEach(Array(sortedCategories), id: \.key) { category, amount in
-                        HStack(spacing: 12) {
-                            // Icon and category
-                            HStack(spacing: 8) {
-                                if let iconName = category.iconName {
-                                    Image(systemName: iconName)
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.white)
-                                        .frame(width: 30, height: 30)
-                                        .background(category.color)
-                                        .cornerRadius(8)
-                                } else if let emoji = category.emoji {
-                                    Text(emoji)
-                                        .font(.system(size: 16))
-                                        .frame(width: 30, height: 30)
-                                        .background(category.color)
-                                        .cornerRadius(8)
-                                } else {
-                                    Image(systemName: "tag")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.white)
-                                        .frame(width: 30, height: 30)
-                                        .background(category.color)
-                                        .cornerRadius(8)
+                Spacer()
+                
+                Button(action: {
+                    withAnimation {
+                        showCategoryBreakdown.toggle()
+                    }
+                }) {
+                    Label(showCategoryBreakdown ? NSLocalizedString("Hide", comment: "Hide content") : NSLocalizedString("Show", comment: "Show content"), systemImage: showCategoryBreakdown ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            if showCategoryBreakdown {
+                if analyticsViewModel.spendingByCategory.isEmpty {
+                    Text("No category data available")
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical)
+                } else {
+                    let sortedCategories = analyticsViewModel.spendingByCategory
+                        .sorted(by: { $0.value > $1.value })
+                        .prefix(5) // Show top 5 categories
+                    
+                    VStack(spacing: 12) {
+                        ForEach(Array(sortedCategories), id: \.key) { category, amount in
+                            HStack(spacing: 12) {
+                                // Icon and category
+                                HStack(spacing: 8) {
+                                    if let iconName = category.iconName {
+                                        Image(systemName: iconName)
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.white)
+                                            .frame(width: 30, height: 30)
+                                            .background(category.color)
+                                            .cornerRadius(8)
+                                    } else if let emoji = category.emoji {
+                                        Text(emoji)
+                                            .font(.system(size: 16))
+                                            .frame(width: 30, height: 30)
+                                            .background(category.color)
+                                            .cornerRadius(8)
+                                    } else {
+                                        Image(systemName: "tag")
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.white)
+                                            .frame(width: 30, height: 30)
+                                            .background(category.color)
+                                            .cornerRadius(8)
+                                    }
+                                    
+                                    Text(category.displayName)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
                                 }
                                 
-                                Text(category.displayName)
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                            }
-                            
-                            Spacer()
-                            
-                            // Amount and percentage
-                            VStack(alignment: .trailing, spacing: 2) {
-                                Text(amount, format: .currency(code: SettingsViewModel.getAppCurrency()))
-                                    .font(.subheadline)
-                                    .fontWeight(.semibold)
+                                Spacer()
                                 
-                                if analyticsViewModel.totalSpent > 0 {
-                                    Text(String(format: NSLocalizedString("%d%%", comment: "Percentage value"), Int((amount / analyticsViewModel.totalSpent) * 100)))
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                                // Amount and percentage
+                                VStack(alignment: .trailing, spacing: 2) {
+                                    Text(amount, format: .currency(code: SettingsViewModel.getAppCurrency()))
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                    
+                                    if analyticsViewModel.totalSpent > 0 {
+                                        Text(String(format: NSLocalizedString("%d%%", comment: "Percentage value"), Int((amount / analyticsViewModel.totalSpent) * 100)))
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                             }
-                        }
-                        
-                        if category != sortedCategories.last?.key {
-                            Divider()
+                            
+                            if category != sortedCategories.last?.key {
+                                Divider()
+                            }
                         }
                     }
                 }
@@ -347,7 +442,7 @@ struct HomeView: View {
                         showRecentExpenses.toggle()
                     }
                 }) {
-                    Label(showRecentExpenses ? "Hide " : "Show", systemImage: showRecentExpenses ? "chevron.up" : "chevron.down")
+                    Label(showRecentExpenses ? NSLocalizedString("Hide", comment: "Hide content") : NSLocalizedString("Show", comment: "Show content"), systemImage: showRecentExpenses ? "chevron.up" : "chevron.down")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

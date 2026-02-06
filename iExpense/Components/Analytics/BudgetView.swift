@@ -40,14 +40,6 @@ struct BudgetInputView: View {
                             .padding(.horizontal, 10)
                             .frame(width: 150, height: 40)
                     }
-                    .toolbar {
-                        ToolbarItemGroup(placement: .keyboard) {
-                            Spacer()
-                            Button("Done") {
-                                hideKeyboard()
-                            }
-                        }
-                    }
                 }
 
                 Button(action: onSave) {
@@ -75,9 +67,6 @@ struct BudgetInputView: View {
         }
     }
     
-    private func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
 }
 
 /// A component that displays budget status information

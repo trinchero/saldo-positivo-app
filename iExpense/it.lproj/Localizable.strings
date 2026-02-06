@@ -46,7 +46,7 @@
 "No category data available" = "Nessun dato disponibile per le categorie";
 "%d%%" = "%d%%";
 "Recent Expenses" = "Spese recenti";
-"Hide " = "Nascondi ";
+"Hide" = "Nascondi";
 "Show" = "Mostra";
 "No expenses yet" = "Nessuna spesa al momento";
 "View All Expenses" = "Vedi tutte le spese";

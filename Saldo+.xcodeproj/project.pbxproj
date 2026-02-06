@@ -60,8 +60,8 @@
 			membershipExceptions = (
 				Components/IconUtils.swift,
 				Models/Category.swift,
-				Models/ExpenseCategory.swift,
 				Models/Expense.swift,
+				Models/ExpenseCategory.swift,
 				Services/StorageService.swift,
 				Utils/CurrencyCode.swift,
 			);

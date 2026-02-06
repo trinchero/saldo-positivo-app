@@ -3,6 +3,7 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsViewModel
+    @Environment(\.modelContext) private var modelContext
     
     @State private var showingImportFilePicker = false
     @State private var showingExportShareSheet = false
@@ -228,7 +229,7 @@ struct SettingsView: View {
         Group {
             Button("Cancel", role: .cancel) { }
             Button("Reset", role: .destructive) {
-                settingsManager.resetAllData()
+                settingsManager.resetAllData(using: modelContext)
             }
         }
     }
