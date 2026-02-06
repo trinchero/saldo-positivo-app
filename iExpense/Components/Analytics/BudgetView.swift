@@ -1,10 +1,3 @@
-//
-//  BudgetView.swift
-//  iExpense
-//
-//  Created by Dragomir Mindrescu on 27.04.2025.
-//
-
 import SwiftUI
 import Charts
 
@@ -117,7 +110,7 @@ struct BudgetStatusView: View {
             VStack(spacing: 16) {
                 // Progress bar
                 let progress = min(1.0, totalSpent / currentBudget)
-                let progressColor: Color = progress < 0.75 ? .blue : (progress < 0.9 ? .orange : .red)
+                let progressColor: Color = progress < 0.75 ? .accentColor : (progress < 0.9 ? .orange : .red)
                 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
@@ -296,7 +289,7 @@ struct BudgetRecommendationsView: View {
                             } else {
                                 Text("(-\(Int((currentBudget - suggestedBudget) / currentBudget * 100))%)")
                                     .font(.caption)
-                                    .foregroundColor(.green)
+                                    .foregroundColor(.accentColor)
                             }
                         }
                     }
