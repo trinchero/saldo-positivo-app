@@ -91,13 +91,11 @@ struct AddExpenseView: View {
                     }
                 }
                 
-                // Done button only shows when keyboard is visible
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if keyboardVisible {
-                        Button("Done") {
-                            hideKeyboard()
-                        }
+                    Button("Done") {
+                        saveExpense()
                     }
+                    .disabled(!isFormValid())
                 }
             }
             .onAppear {

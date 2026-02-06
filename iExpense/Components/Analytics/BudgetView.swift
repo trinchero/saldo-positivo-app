@@ -141,6 +141,7 @@ struct BudgetStatusView: View {
                     .frame(height: 12)
                 }
                 
+                let remaining = currentBudget - totalSpent
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Spent")
@@ -159,9 +160,10 @@ struct BudgetStatusView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                         
-                        Text(max(0, currentBudget - totalSpent), format: .currency(code: currencyCode))
+                        Text(remaining, format: .currency(code: currencyCode))
                             .font(.title3)
                             .fontWeight(.bold)
+                            .foregroundColor(remaining >= 0 ? .green : .red)
                     }
                 }
                 
