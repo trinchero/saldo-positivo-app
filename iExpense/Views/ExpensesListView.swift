@@ -2,10 +2,7 @@ import SwiftUI
 
 struct ExpensesListView: View {
     @ObservedObject var viewModel: ExpenseViewModel
-    @StateObject private var analyticsViewModel = AnalyticsViewModel(expenses: [])
-
-    @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date())
-    @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
+    @ObservedObject var analyticsViewModel: AnalyticsViewModel
     @State private var recentlyDeletedExpenses: [Expense] = []
     @State private var showUndoSnackbar: Bool = false
     @State private var undoTimer: Timer? = nil
@@ -40,7 +37,7 @@ struct ExpensesListView: View {
         var result = viewModel.expenses.filter { expense in
             let month = Calendar.current.component(.month, from: expense.date)
             let year = Calendar.current.component(.year, from: expense.date)
-            let matchesDate = month == selectedMonth && year == selectedYear
+            let matchesDate = month == analyticsViewModel.selectedMonth && year == analyticsViewModel.selectedYear
             let matchesSearch = searchText.isEmpty || 
                 expense.title.localizedCaseInsensitiveContains(searchText) ||
                 expense.category.displayName.localizedCaseInsensitiveContains(searchText)
@@ -196,6 +193,14 @@ struct ExpensesListView: View {
                     }
                 }
             }
+            .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToExpensesTab"))) { notification in
+                if let raw = notification.userInfo?["category"] as? String,
+                   let category = Category(rawValue: raw),
+                   !raw.isEmpty {
+                    selectedCategories = [category]
+                    searchText = ""
+                }
+            }
             .onChange(of: viewModel.expenses) {
                 analyticsViewModel.updateExpenses(viewModel.expenses)
             }
@@ -252,9 +257,12 @@ struct ExpensesListView: View {
     
     private var monthYearPicker: some View {
         MonthYearPicker(
-            selectedMonth: $selectedMonth,
-            selectedYear: $selectedYear,
-            monthsToShow: monthHistoryLength
+            selectedMonth: $analyticsViewModel.selectedMonth,
+            selectedYear: $analyticsViewModel.selectedYear,
+            monthsToShow: monthHistoryLength,
+            onMonthYearChanged: {
+                analyticsViewModel.calculateAnalytics()
+            }
         )
         .padding(.horizontal)
     }
@@ -268,7 +276,7 @@ struct ExpensesListView: View {
             // Total amount for selected month
             HStack(spacing: 12) {
                 VStack(alignment: .leading,     spacing: 4) {
-                    Text(String(format: NSLocalizedString("Total for %@", comment: "Total for month"), Calendar.current.monthSymbols[selectedMonth - 1]))
+                    Text(String(format: NSLocalizedString("Total for %@", comment: "Total for month"), Calendar.current.monthSymbols[analyticsViewModel.selectedMonth - 1]))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
@@ -383,7 +391,7 @@ struct ExpensesListView: View {
                 }
                 .padding(.top, 8)
             } else {
-                Text(String(format: NSLocalizedString("Add your first expense for %@ %@", comment: "Add first expense for month and year"), Calendar.current.monthSymbols[selectedMonth - 1], String(selectedYear)))
+                Text(String(format: NSLocalizedString("Add your first expense for %@ %@", comment: "Add first expense for month and year"), Calendar.current.monthSymbols[analyticsViewModel.selectedMonth - 1], String(analyticsViewModel.selectedYear)))
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)

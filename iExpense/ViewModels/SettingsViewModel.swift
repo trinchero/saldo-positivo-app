@@ -110,11 +110,11 @@ class SettingsViewModel: ObservableObject {
             sharedDefaults?.set(savedCurrency, forKey: "selectedCurrency")
             sharedDefaults?.synchronize()
         } else {
-            self.selectedCurrency = "USD"
+            self.selectedCurrency = "EUR"
             
             // Set default in both places
-            UserDefaults.standard.set("USD", forKey: "selectedCurrency")
-            sharedDefaults?.set("USD", forKey: "selectedCurrency")
+            UserDefaults.standard.set("EUR", forKey: "selectedCurrency")
+            sharedDefaults?.set("EUR", forKey: "selectedCurrency")
             sharedDefaults?.synchronize()
         }
         
@@ -164,6 +164,12 @@ class SettingsViewModel: ObservableObject {
     func resetAllData() {
         StorageService.saveExpenses([])
         StorageService.saveBudgets([:])
+        
+        // Clear stored notes for expenses
+        let defaults = UserDefaults.standard
+        for key in defaults.dictionaryRepresentation().keys where key.hasPrefix("notes_") {
+            defaults.removeObject(forKey: key)
+        }
     }
     
     // Static method to get app-wide settings without needing to initialize
@@ -181,13 +187,13 @@ class SettingsViewModel: ObservableObject {
         }
         
         // Fall back to standard defaults
-        return UserDefaults.standard.string(forKey: "selectedCurrency") ?? "USD"
+        return UserDefaults.standard.string(forKey: "selectedCurrency") ?? "EUR"
     }
 }
 
 // Function to get currency symbol - doesn't use main actor
 func getSettingsCurrencySymbol() -> String {
-    let code = UserDefaults.standard.string(forKey: "selectedCurrency") ?? "USD"
+    let code = UserDefaults.standard.string(forKey: "selectedCurrency") ?? "EUR"
     if let currency = availableCurrencies.first(where: { $0.code == code }) {
         return currency.symbol
     }

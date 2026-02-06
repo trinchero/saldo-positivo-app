@@ -227,3 +227,16 @@
 "Expense Price" = "Importo spesa";
 "Expense Category" = "Categoria spesa";
 "What did you spend money on? %@, how much did you spend? %@, and what category does it belong to? %@" = "Per cosa hai speso i soldi? %@, quanto hai speso? %@ e a quale categoria appartiene? %@";
+"Quick Add" = "Aggiunta rapida";
+"Quickly add an expense" = "Aggiungi rapidamente una spesa";
+"Most fields are optional - just enter an amount." = "La maggior parte dei campi è facoltativa - inserisci solo un importo.";
+"Today" = "Oggi";
+"Yesterday" = "Ieri";
+"View expenses" = "Vedi spese";
+"On track" = "In linea";
+"Heads up" = "Attenzione";
+"Watch this" = "Da tenere d'occhio";
+"New" = "Nuovo";
+"View %@" = "Vedi %@";
+"Add note" = "Aggiungi nota";
+"Save" = "Salva";

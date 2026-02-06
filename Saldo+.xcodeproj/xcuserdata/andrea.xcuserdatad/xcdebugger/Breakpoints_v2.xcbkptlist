@@ -20,20 +20,6 @@
             landmarkType = "24">
             <Locations>
                <Location
-                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - 8a3863c8297f4c30"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Inpenso.TestButton.body.getter : some"
-                  moduleName = "Inpenso.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/andrea/Repository/Saldo+/iExpense/ViewTests/TestButton.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "12"
-                  endingLineNumber = "12">
-               </Location>
-               <Location
                   uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - 8a3863c8297f4cdf"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"

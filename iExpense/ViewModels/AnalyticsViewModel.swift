@@ -8,6 +8,7 @@ struct SpendingInsight {
     let description: String
     let icon: String
     let color: Color
+    let category: Category?
     
     enum InsightType {
         case positive
@@ -320,7 +321,8 @@ class AnalyticsViewModel: ObservableObject {
                     title: NSLocalizedString("Budget Alert", comment: "Insight title"),
                     description: String(format: NSLocalizedString("You've used %d%% of your monthly budget.", comment: "Budget used insight"), Int(percentOfBudgetUsed)),
                     icon: "exclamationmark.triangle",
-                    color: .red
+                    color: .red,
+                    category: nil
                 ))
             } else if percentOfBudgetUsed >= 75 {
                 newInsights.append(SpendingInsight(
@@ -328,7 +330,8 @@ class AnalyticsViewModel: ObservableObject {
                     title: NSLocalizedString("Budget Notice", comment: "Insight title"),
                     description: String(format: NSLocalizedString("You've used %d%% of your monthly budget.", comment: "Budget used insight"), Int(percentOfBudgetUsed)),
                     icon: "bell",
-                    color: .orange
+                    color: .orange,
+                    category: nil
                 ))
             } else if daysRemainingInMonth < 7 && percentOfBudgetUsed < 60 {
                 newInsights.append(SpendingInsight(
@@ -336,7 +339,8 @@ class AnalyticsViewModel: ObservableObject {
                     title: NSLocalizedString("Under Budget", comment: "Insight title"),
                     description: NSLocalizedString("Great job! You're under budget this month.", comment: "Under budget insight"),
                     icon: "checkmark.circle",
-                    color: .green
+                    color: .green,
+                    category: nil
                 ))
             }
         }
@@ -348,7 +352,8 @@ class AnalyticsViewModel: ObservableObject {
                 title: NSLocalizedString("Spending Increase", comment: "Insight title"),
                 description: String(format: NSLocalizedString("%@ spending increased by %d%% from last month.", comment: "Category spending increase insight"), fastestGrowing.0.displayName, Int(fastestGrowing.1)),
                 icon: "arrow.up.right",
-                color: .red
+                color: .red,
+                category: fastestGrowing.0
             ))
         }
         
@@ -365,7 +370,8 @@ class AnalyticsViewModel: ObservableObject {
                 title: NSLocalizedString("Spending Decrease", comment: "Insight title"),
                 description: String(format: NSLocalizedString("You reduced %@ spending by %d%%.", comment: "Category spending decrease insight"), bestReduction.category.displayName, Int(abs(bestReduction.percentChange))),
                 icon: "arrow.down.right",
-                color: .green
+                color: .green,
+                category: bestReduction.category
             ))
         }
         
@@ -382,7 +388,8 @@ class AnalyticsViewModel: ObservableObject {
                 title: NSLocalizedString("Projected Overspending", comment: "Insight title"),
                 description: String(format: NSLocalizedString("At this rate, you might exceed your budget by %@.", comment: "Projected overspending insight"), formattedOverage),
                 icon: "chart.line.uptrend.xyaxis",
-                color: .red
+                color: .red,
+                category: nil
             ))
         }
         

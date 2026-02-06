@@ -35,7 +35,7 @@ struct iExpenseApp: App {
             sharedDefaults?.synchronize()
         } else {
             // If no currency in standard defaults, set a default in both places
-            let defaultCurrency = "USD"
+            let defaultCurrency = "EUR"
             UserDefaults.standard.set(defaultCurrency, forKey: "selectedCurrency")
             sharedDefaults?.set(defaultCurrency, forKey: "selectedCurrency")
             sharedDefaults?.synchronize()

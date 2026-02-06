@@ -31,8 +31,10 @@ struct AddExpenseView: View {
     init(viewModel: ExpenseViewModel) {
         self.viewModel = viewModel
         // Initialize with the default category from settings
+        let lastUsed = UserDefaults.standard.string(forKey: "lastUsedCategory")
         let defaultCategory = UserDefaults.standard.string(forKey: "defaultCategory") ?? Category.food.rawValue
-        _selectedCategory = State(initialValue: Category(rawValue: defaultCategory) ?? .food)
+        let initialCategory = Category(rawValue: lastUsed ?? defaultCategory) ?? .food
+        _selectedCategory = State(initialValue: initialCategory)
     }
     
     var body: some View {
@@ -184,6 +186,7 @@ struct AddExpenseView: View {
 //            .cornerRadius(16)
         }
         .disabled(!isFormValid())
+        .buttonStyle(PressableButtonStyle())
     }
     
 //    let saveButton: some View =
@@ -265,6 +268,9 @@ struct AddExpenseView: View {
             date: selectedDate,
             category: selectedCategory
         )
+
+        // Remember last used category to reduce friction next time
+        UserDefaults.standard.set(selectedCategory.rawValue, forKey: "lastUsedCategory")
         
         // Save notes to UserDefaults using the expense ID
         if !notes.isEmpty {

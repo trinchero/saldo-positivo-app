@@ -227,3 +227,16 @@
 "Expense Price" = "Precio del gasto";
 "Expense Category" = "Categoría del gasto";
 "What did you spend money on? %@, how much did you spend? %@, and what category does it belong to? %@" = "¿En qué gastaste dinero? %@, ¿cuánto gastaste? %@, y ¿a qué categoría pertenece? %@";
+"Quick Add" = "Añadir rápido";
+"Quickly add an expense" = "Añade un gasto rápidamente";
+"Most fields are optional - just enter an amount." = "La mayoría de los campos son opcionales - solo introduce un monto.";
+"Today" = "Hoy";
+"Yesterday" = "Ayer";
+"View expenses" = "Ver gastos";
+"On track" = "En buen camino";
+"Heads up" = "Atención";
+"Watch this" = "Vigila esto";
+"New" = "Nuevo";
+"View %@" = "Ver %@";
+"Add note" = "Añadir nota";
+"Save" = "Guardar";

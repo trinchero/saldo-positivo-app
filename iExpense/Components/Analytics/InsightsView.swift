@@ -98,6 +98,7 @@ struct KeyStatisticsView: View {
 /// A component that displays a collection of spending insights
 struct InsightsCardView: View {
     let insights: [SpendingInsight]
+    var onViewExpenses: ((Category?) -> Void)? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -116,27 +117,53 @@ struct InsightsCardView: View {
             } else {
                 ForEach(insights) { insight in
                     insightCard(insight: insight)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
         }
+        .animation(.spring(response: 0.4, dampingFraction: 0.85), value: insights.count)
     }
     
     private func insightCard(insight: SpendingInsight) -> some View {
-        HStack(spacing: 16) {
-            // Icon
-            Image(systemName: insight.icon)
-                .font(.system(size: 28))
-                .foregroundColor(insight.color)
-                .frame(width: 36)
-            
-            // Content
-            VStack(alignment: .leading, spacing: 4) {
-                Text(insight.title)
-                    .font(.headline)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 12) {
+                Image(systemName: insight.icon)
+                    .font(.system(size: 26))
+                    .foregroundColor(insight.color)
+                    .frame(width: 32)
                 
-                Text(insight.description)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(insight.title)
+                        .font(.headline)
+                    
+                    Text(insight.description)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Text(badgeText(for: insight.type))
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(badgeColor(for: insight.type).opacity(0.18))
+                    .foregroundColor(badgeColor(for: insight.type))
+                    .clipShape(Capsule())
+            }
+            
+            if let onViewExpenses, let category = insight.category {
+                Button(action: { onViewExpenses(category) }) {
+                    HStack(spacing: 6) {
+                        Text(String(format: NSLocalizedString("View %@", comment: "View category CTA"), category.displayName))
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                    }
+                    .font(.caption)
+                    .foregroundColor(.accentColor)
+                }
+                .buttonStyle(PressableButtonStyle(scale: 0.98, opacity: 0.95))
             }
         }
         .padding()
@@ -145,6 +172,28 @@ struct InsightsCardView: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(.secondarySystemBackground))
         )
+    }
+
+    private func badgeText(for type: SpendingInsight.InsightType) -> String {
+        switch type {
+        case .positive:
+            return NSLocalizedString("On track", comment: "Positive insight badge")
+        case .neutral:
+            return NSLocalizedString("Heads up", comment: "Neutral insight badge")
+        case .negative:
+            return NSLocalizedString("Watch this", comment: "Negative insight badge")
+        }
+    }
+
+    private func badgeColor(for type: SpendingInsight.InsightType) -> Color {
+        switch type {
+        case .positive:
+            return .green
+        case .neutral:
+            return .orange
+        case .negative:
+            return .red
+        }
     }
 }
 
@@ -254,14 +303,16 @@ struct SpendingPatternView: View {
                 title: "Weekend Spending Trend",
                 description: "You tend to spend 45% more on weekends compared to weekdays",
                 icon: "calendar.badge.exclamationmark",
-                color: .orange
+                color: .orange,
+                category: nil
             ),
             SpendingInsight(
                 type: .negative,
                 title: "Food Spending Increasing",
                 description: "Your food spending has increased by 20% compared to last month",
                 icon: "fork.knife",
-                color: .red
+                color: .red,
+                category: .food
             )
         ])
         

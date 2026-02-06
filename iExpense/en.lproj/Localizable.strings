@@ -227,3 +227,16 @@
 "Expense Price" = "Expense Price";
 "Expense Category" = "Expense Category";
 "What did you spend money on? %@, how much did you spend? %@, and what category does it belong to? %@" = "What did you spend money on? %@, how much did you spend? %@, and what category does it belong to? %@";
+"Quick Add" = "Quick Add";
+"Quickly add an expense" = "Quickly add an expense";
+"Most fields are optional - just enter an amount." = "Most fields are optional - just enter an amount.";
+"Today" = "Today";
+"Yesterday" = "Yesterday";
+"View expenses" = "View expenses";
+"On track" = "On track";
+"Heads up" = "Heads up";
+"Watch this" = "Watch this";
+"New" = "New";
+"View %@" = "View %@";
+"Add note" = "Add note";
+"Save" = "Save";

@@ -192,7 +192,13 @@ struct AnalyticsView: View {
             )
             
             // Auto-generated insights
-            InsightsCardView(insights: analyticsViewModel.insights)
+            InsightsCardView(insights: analyticsViewModel.insights, onViewExpenses: { category in
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("SwitchToExpensesTab"),
+                    object: nil,
+                    userInfo: ["category": category?.rawValue ?? ""]
+                )
+            })
             
             // Spending Pattern Analysis
             SpendingPatternView(

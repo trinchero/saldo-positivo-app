@@ -5,6 +5,7 @@ struct HomeView: View {
     @ObservedObject var viewModel: ExpenseViewModel
     @ObservedObject var analyticsViewModel: AnalyticsViewModel
     @State private var showingAddExpense = false
+    @State private var showingQuickAdd = false
     @State private var showRecentExpenses = true
     @State private var animateCards = false
     @State private var selectedExpenseToEdit: Expense? = nil
@@ -29,7 +30,7 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        showingAddExpense = true
+                        showingQuickAdd = true
                     }) {
                         HStack(spacing: 4) {
                             Image(systemName: "plus")
@@ -42,6 +43,11 @@ struct HomeView: View {
                         .cornerRadius(20)
                     }
                 }
+            }
+            .sheet(isPresented: $showingQuickAdd) {
+                QuickAddExpenseView(viewModel: viewModel, onShowFullForm: {
+                    showingAddExpense = true
+                })
             }
             .sheet(isPresented: $showingAddExpense) {
                 AddExpenseView(viewModel: viewModel)
