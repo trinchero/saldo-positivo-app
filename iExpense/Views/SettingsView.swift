@@ -204,6 +204,7 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section(header: Text("About")) {
             versionRow
+            websiteRow
         }
     }
     
@@ -213,6 +214,17 @@ struct SettingsView: View {
             Spacer()
             Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
                 .foregroundColor(.secondary)
+        }
+    }
+
+    private var websiteRow: some View {
+        Link(destination: URL(string: "https://www.saldopositivo.net")!) {
+            HStack {
+                Text("Website")
+                Spacer()
+                Image(systemName: "arrow.up.right.square")
+                    .foregroundColor(.secondary)
+            }
         }
     }
     

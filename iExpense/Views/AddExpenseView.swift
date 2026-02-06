@@ -303,14 +303,9 @@ struct AddExpenseView: View {
     private func applyLastUsedCategoryIfNeeded() {
         guard !didSetInitialCategory else { return }
         didSetInitialCategory = true
-        if let key = UserDefaults.standard.string(forKey: "lastUsedCategoryKey"),
-           let resolved = resolveCategory(from: key) {
-            selectedCategory = resolved
-            return
-        }
-        if let legacy = UserDefaults.standard.string(forKey: "lastUsedCategory"),
-           let legacyCategory = Category(rawValue: legacy) {
-            selectedCategory = .system(legacyCategory)
+        if let raw = UserDefaults.standard.string(forKey: "defaultCategory"),
+           let defaultCategory = Category(rawValue: raw) {
+            selectedCategory = .system(defaultCategory)
         }
     }
 
