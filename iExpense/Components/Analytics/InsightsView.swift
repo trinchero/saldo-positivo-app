@@ -1,11 +1,3 @@
-//
-//  InsightsView.swift
-//  iExpense
-//
-//  Created by Dragomir Mindrescu on 27.04.2025.
-//
-
-
 import SwiftUI
 
 // Add Identifiable conformance to SpendingInsight from AnalyticsViewModel
