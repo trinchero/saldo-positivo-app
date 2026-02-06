@@ -1,10 +1,3 @@
-//
-//  CardView.swift
-//  iExpense
-//
-//  Created by Dragomir Mindrescu on 27.04.2025.
-//
-
 import SwiftUI
 
 /// A standard card view with consistent styling

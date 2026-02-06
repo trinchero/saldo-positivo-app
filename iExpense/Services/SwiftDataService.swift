@@ -1,10 +1,3 @@
-//
-//  SwiftDataService.swift
-//  iExpense
-//
-//  Created by Dragomir Mindrescu on 27.04.2025.
-//
-
 import Foundation
 import SwiftData
 import SwiftUI

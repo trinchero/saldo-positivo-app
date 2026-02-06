@@ -1,8 +1,3 @@
-//
-//  ExpensesListView.swift
-//  iExpense
-//
-
 import SwiftUI
 
 struct ExpensesListView: View {

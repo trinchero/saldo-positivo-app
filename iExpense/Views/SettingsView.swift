@@ -1,8 +1,3 @@
-//
-//  SettingsView.swift
-//  iExpense
-//
-
 import SwiftUI
 import UniformTypeIdentifiers
 

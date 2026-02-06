@@ -14,13 +14,13 @@
             filePath = "iExpense/ViewTests/TestButton.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "18"
-            endingLineNumber = "18"
+            startingLineNumber = "11"
+            endingLineNumber = "11"
             landmarkName = "body"
             landmarkType = "24">
             <Locations>
                <Location
-                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - 8a3863c8297f4bf6"
+                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - 8a3863c8297f4c30"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -30,11 +30,25 @@
                   urlString = "file:///Users/andrea/Repository/Saldo+/iExpense/ViewTests/TestButton.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "18"
-                  endingLineNumber = "18">
+                  startingLineNumber = "12"
+                  endingLineNumber = "12">
                </Location>
                <Location
-                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - b7f0d17439b7465f"
+                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - 8a3863c8297f4cdf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Inpenso.TestButton.body.getter : some"
+                  moduleName = "Inpenso.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/andrea/Repository/Saldo+/iExpense/ViewTests/TestButton.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "11"
+                  endingLineNumber = "11">
+               </Location>
+               <Location
+                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - b7f0d17439b741b8"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -44,8 +58,8 @@
                   urlString = "file:///Users/andrea/Repository/Saldo+/iExpense/ViewTests/TestButton.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "19"
-                  endingLineNumber = "19">
+                  startingLineNumber = "12"
+                  endingLineNumber = "12">
                </Location>
             </Locations>
          </BreakpointContent>

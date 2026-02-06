@@ -1,10 +1,3 @@
-//
-//  SegmentedControlView.swift
-//  Inpenso
-//
-//  Created by Dragomir Mindrescu on 14.10.2025.
-//
-
 import SwiftUI
 
 struct SegmentedControlView: View {

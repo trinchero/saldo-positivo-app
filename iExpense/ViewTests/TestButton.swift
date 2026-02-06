@@ -1,10 +1,3 @@
-//
-//  TestButton.swift
-//  Inpenso
-//
-//  Created by Dragomir Mindrescu on 16.10.2025.
-//
-
 import SwiftUI
 
 struct TestButton: View {
