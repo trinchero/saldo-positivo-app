@@ -17,6 +17,15 @@ struct HomeView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
+                    MonthYearPicker(
+                        selectedMonth: $analyticsViewModel.selectedMonth,
+                        selectedYear: $analyticsViewModel.selectedYear,
+                        onMonthYearChanged: {
+                            analyticsViewModel.calculateAnalytics()
+                        }
+                    )
+                    .padding(.top, 8)
+
                     headerCard
                         .padding(.top, 10)
                     recentSpendingCard

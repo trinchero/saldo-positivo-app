@@ -22,7 +22,7 @@ struct MainTabView: View {
                     }
                     .tag(1)
 
-                ExpensesListView(viewModel: viewModel)
+                ExpensesListView(viewModel: viewModel, analyticsViewModel: analyticsViewModel)
                     .tabItem {
                         Label("Expenses", systemImage: "list.bullet.rectangle.portrait.fill")
                     }

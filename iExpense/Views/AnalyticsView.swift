@@ -6,28 +6,14 @@ struct AnalyticsView: View {
     @State private var selectedTab: AnalyticsTab = .overview
     @State private var showSaveBudgetSuccess: Bool = false
     
-    // Create local state for MonthYearPicker to avoid wrapper issues
-    @State private var selectedMonth: Int
-    @State private var selectedYear: Int
-    
-    init(analyticsViewModel: AnalyticsViewModel) {
-        self.analyticsViewModel = analyticsViewModel
-        // Initialize the state variables with the view model values
-        _selectedMonth = State(initialValue: analyticsViewModel.selectedMonth)
-        _selectedYear = State(initialValue: analyticsViewModel.selectedYear)
-    }
-    
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
                 // Month Year Picker
                 MonthYearPicker(
-                    selectedMonth: $selectedMonth,
-                    selectedYear: $selectedYear,
+                    selectedMonth: $analyticsViewModel.selectedMonth,
+                    selectedYear: $analyticsViewModel.selectedYear,
                     onMonthYearChanged: {
-                        // Update view model values
-                        analyticsViewModel.selectedMonth = selectedMonth
-                        analyticsViewModel.selectedYear = selectedYear
                         analyticsViewModel.calculateAnalytics()
                     }
                 )

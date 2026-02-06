@@ -481,6 +481,13 @@ struct ExpensesListView: View {
     }
 }
 
+#Preview {
+    ExpensesListView(
+        viewModel: ExpenseViewModel(),
+        analyticsViewModel: AnalyticsViewModel(expenses: [])
+    )
+}
+
 // MARK: - Expense Row View
 
 struct ExpenseRowView: View {
@@ -744,5 +751,8 @@ struct ExpenseRowContent: View {
 }
 
 #Preview {
-    ExpensesListView(viewModel: ExpenseViewModel())
+    ExpensesListView(
+        viewModel: ExpenseViewModel(),
+        analyticsViewModel: AnalyticsViewModel(expenses: [])
+    )
 }
