@@ -243,3 +243,15 @@
 "Group" = "Group";
 "By Category" = "By Category";
 "By Day" = "By Day";
+"Manage Categories" = "Manage Categories";
+"Default Categories" = "Default Categories";
+"Custom Categories" = "Custom Categories";
+"No custom categories yet" = "No custom categories yet";
+"Default" = "Default";
+"Category Details" = "Category Details";
+"Name" = "Name";
+"Emoji" = "Emoji";
+"You can add up to %d custom categories." = "You can add up to %d custom categories.";
+"New Category" = "New Category";
+"Edit Category" = "Edit Category";
+"Max %d categories. Default categories cannot be removed." = "Max %d categories. Default categories cannot be removed.";

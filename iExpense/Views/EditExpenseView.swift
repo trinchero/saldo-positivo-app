@@ -1,14 +1,16 @@
 import SwiftUI
+import SwiftData
 
 struct EditExpenseView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var viewModel: ExpenseViewModel
+    @Query private var customCategories: [CustomCategoryItem]
 
     @State private var title: String
     @State private var price: String
     @State private var selectedDate: Date
-    @State private var selectedCategory: Category
+    @State private var selectedCategory: ExpenseCategory
     @State private var showDatePicker: Bool = false
     @State private var notes: String = ""
     @State private var keyboardHeight: CGFloat = 0
@@ -89,7 +91,10 @@ struct EditExpenseView: View {
                         
                         // Category selection
                         CardView(title: "Category") {
-                            CategoryGrid(selectedCategory: $selectedCategory)
+                            CategoryGrid(
+                                categories: allCategories,
+                                selectedCategory: $selectedCategory
+                            )
                                 .padding(.horizontal)
                         }
                         
@@ -286,8 +291,12 @@ struct EditExpenseView: View {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+
+    private var allCategories: [ExpenseCategory] {
+        CategoryProvider.combinedCategories(custom: customCategories)
+    }
 }
 
 #Preview {
-    EditExpenseView(viewModel: ExpenseViewModel(), expense: Expense(title: "Sample", price: 10, date: Date(), category: .food))
+    EditExpenseView(viewModel: ExpenseViewModel(), expense: Expense(title: "Sample", price: 10, date: Date(), category: .system(.food)))
 }

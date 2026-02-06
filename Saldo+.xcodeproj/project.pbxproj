@@ -58,7 +58,9 @@
 		714E83342DBE3694005ED7BB /* Exceptions for "iExpense" folder in "InpensoWidgetExtensionExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Components/IconUtils.swift,
 				Models/Category.swift,
+				Models/ExpenseCategory.swift,
 				Models/Expense.swift,
 				Services/StorageService.swift,
 				Utils/CurrencyCode.swift,

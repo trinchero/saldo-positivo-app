@@ -1,17 +1,20 @@
 import SwiftUI
+import SwiftData
 
 struct AddExpenseView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var viewModel: ExpenseViewModel
     @StateObject private var settingsViewModel = SettingsViewModel()
+    @Query private var customCategories: [CustomCategoryItem]
     
     // Form fields
     @State private var title: String = ""
     @State private var price: String = ""
-    @State private var selectedCategory: Category
+    @State private var selectedCategory: ExpenseCategory
     @State private var selectedDate: Date = Date()
     @State private var notes: String = ""
+    @State private var didSetInitialCategory = false
     
     // UI States
     @State private var showDatePicker = false
@@ -31,10 +34,9 @@ struct AddExpenseView: View {
     init(viewModel: ExpenseViewModel) {
         self.viewModel = viewModel
         // Initialize with the default category from settings
-        let lastUsed = UserDefaults.standard.string(forKey: "lastUsedCategory")
         let defaultCategory = UserDefaults.standard.string(forKey: "defaultCategory") ?? Category.food.rawValue
-        let initialCategory = Category(rawValue: lastUsed ?? defaultCategory) ?? .food
-        _selectedCategory = State(initialValue: initialCategory)
+        let initialCategory = Category(rawValue: defaultCategory) ?? .food
+        _selectedCategory = State(initialValue: .system(initialCategory))
     }
     
     var body: some View {
@@ -50,7 +52,10 @@ struct AddExpenseView: View {
                         
                         // Category selection
                         CardView(title: "Category") {
-                            CategoryGrid(selectedCategory: $selectedCategory)
+                            CategoryGrid(
+                                categories: allCategories,
+                                selectedCategory: $selectedCategory
+                            )
                                 .padding(.horizontal)
                         }
                         
@@ -102,6 +107,7 @@ struct AddExpenseView: View {
             }
             .onAppear {
                 setupKeyboardObservers()
+                applyLastUsedCategoryIfNeeded()
             }
             .onDisappear {
                 removeKeyboardObservers()
@@ -270,7 +276,7 @@ struct AddExpenseView: View {
         )
 
         // Remember last used category to reduce friction next time
-        UserDefaults.standard.set(selectedCategory.rawValue, forKey: "lastUsedCategory")
+        UserDefaults.standard.set(lastUsedCategoryKey(selectedCategory), forKey: "lastUsedCategoryKey")
         
         // Save notes to UserDefaults using the expense ID
         if !notes.isEmpty {
@@ -287,6 +293,45 @@ struct AddExpenseView: View {
         // Wait for animation, then dismiss
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             dismiss()
+        }
+    }
+
+    private var allCategories: [ExpenseCategory] {
+        CategoryProvider.combinedCategories(custom: customCategories)
+    }
+
+    private func applyLastUsedCategoryIfNeeded() {
+        guard !didSetInitialCategory else { return }
+        didSetInitialCategory = true
+        if let key = UserDefaults.standard.string(forKey: "lastUsedCategoryKey"),
+           let resolved = resolveCategory(from: key) {
+            selectedCategory = resolved
+            return
+        }
+        if let legacy = UserDefaults.standard.string(forKey: "lastUsedCategory"),
+           let legacyCategory = Category(rawValue: legacy) {
+            selectedCategory = .system(legacyCategory)
+        }
+    }
+
+    private func resolveCategory(from key: String) -> ExpenseCategory? {
+        if key.hasPrefix("custom:") {
+            let id = key.replacingOccurrences(of: "custom:", with: "")
+            return allCategories.first(where: { $0.id == id })
+        }
+        if key.hasPrefix("system:") {
+            let raw = key.replacingOccurrences(of: "system:", with: "")
+            return allCategories.first(where: { $0.id == raw })
+        }
+        return nil
+    }
+
+    private func lastUsedCategoryKey(_ category: ExpenseCategory) -> String {
+        switch category.kind {
+        case .system:
+            return "system:\(category.id)"
+        case .custom:
+            return "custom:\(category.id)"
         }
     }
     

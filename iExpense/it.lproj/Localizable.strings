@@ -243,3 +243,15 @@
 "Group" = "Raggruppa";
 "By Category" = "Per categoria";
 "By Day" = "Per giorno";
+"Manage Categories" = "Gestisci categorie";
+"Default Categories" = "Categorie predefinite";
+"Custom Categories" = "Categorie personalizzate";
+"No custom categories yet" = "Nessuna categoria personalizzata";
+"Default" = "Predefinita";
+"Category Details" = "Dettagli categoria";
+"Name" = "Nome";
+"Emoji" = "Emoji";
+"You can add up to %d custom categories." = "Puoi aggiungere fino a %d categorie personalizzate.";
+"New Category" = "Nuova categoria";
+"Edit Category" = "Modifica categoria";
+"Max %d categories. Default categories cannot be removed." = "Massimo %d categorie. Le categorie predefinite non possono essere rimosse.";

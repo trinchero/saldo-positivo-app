@@ -3,12 +3,12 @@ import Charts
 
 /// A component that displays spending breakdown by category
 struct CategoryBreakdownView: View {
-    let spendingByCategory: [Category: Double]
+    let spendingByCategory: [ExpenseCategory: Double]
     let totalSpent: Double
     let currencyCode: String
     
     init(
-        spendingByCategory: [Category: Double],
+        spendingByCategory: [ExpenseCategory: Double],
         totalSpent: Double,
         currencyCode: String? = nil
     ) {
@@ -61,7 +61,7 @@ struct CategoryBreakdownView: View {
         )
     }
     
-    private func categoryRow(category: Category, amount: Double) -> some View {
+    private func categoryRow(category: ExpenseCategory, amount: Double) -> some View {
         HStack {
             // Color indicator
             Circle()
@@ -69,8 +69,13 @@ struct CategoryBreakdownView: View {
                 .frame(width: 12, height: 12)
             
             // Category name
-            Text(category.displayName)
-                .font(.subheadline)
+            if let emoji = category.emoji {
+                Text("\(emoji) \(category.displayName)")
+                    .font(.subheadline)
+            } else {
+                Text(category.displayName)
+                    .font(.subheadline)
+            }
             
             Spacer()
             
@@ -93,12 +98,12 @@ struct CategoryBreakdownView: View {
 }
 
 #Preview {
-    let sampleData: [Category: Double] = [
-        .food: 450.50,
-        .transportation: 220.75,
-        .rent: 1200.00,
-        .entertainment: 180.25,
-        .utilities: 310.80
+    let sampleData: [ExpenseCategory: Double] = [
+        .system(.food): 450.50,
+        .system(.transportation): 220.75,
+        .system(.rent): 1200.00,
+        .system(.entertainment): 180.25,
+        .system(.utilities): 310.80
     ]
     
     CategoryBreakdownView(

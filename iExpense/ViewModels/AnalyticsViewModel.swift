@@ -8,7 +8,7 @@ struct SpendingInsight {
     let description: String
     let icon: String
     let color: Color
-    let category: Category?
+    let category: ExpenseCategory?
     
     enum InsightType {
         case positive
@@ -61,7 +61,7 @@ struct MonthlyTrend {
 
 // Category spending trend data
 struct CategoryTrend {
-    let category: Category
+    let category: ExpenseCategory
     let previousAmount: Double
     let currentAmount: Double
     
@@ -78,15 +78,15 @@ struct CategoryTrend {
 @MainActor
 class AnalyticsViewModel: ObservableObject {
     @Published private(set) var totalSpent: Double = 0.0
-    @Published private(set) var spendingByCategory: [Category: Double] = [:]
+    @Published private(set) var spendingByCategory: [ExpenseCategory: Double] = [:]
     @Published private(set) var dailySpending: [DailySpending] = []
     @Published private(set) var monthlyTrends: [MonthlyTrend] = []
     @Published private(set) var categoryTrends: [CategoryTrend] = []
     @Published private(set) var insights: [SpendingInsight] = []
     @Published private(set) var averageDailySpend: Double = 0.0
     @Published private(set) var projectedMonthlySpend: Double = 0.0
-    @Published private(set) var biggestExpenseCategory: (Category, Double)? = nil
-    @Published private(set) var fastestGrowingCategory: (Category, Double)? = nil
+    @Published private(set) var biggestExpenseCategory: (ExpenseCategory, Double)? = nil
+    @Published private(set) var fastestGrowingCategory: (ExpenseCategory, Double)? = nil
     
     @Published var selectedMonth: Int = Calendar.current.component(.month, from: Date())
     @Published var selectedYear: Int = Calendar.current.component(.year, from: Date())
@@ -123,7 +123,7 @@ class AnalyticsViewModel: ObservableObject {
         totalSpent = filteredExpenses.reduce(0) { $0 + $1.price }
         
         // Calculate spending by category
-        var categoryTotals: [Category: Double] = [:]
+        var categoryTotals: [ExpenseCategory: Double] = [:]
         for expense in filteredExpenses {
             categoryTotals[expense.category, default: 0] += expense.price
         }
@@ -271,19 +271,20 @@ class AnalyticsViewModel: ObservableObject {
         }
         
         // Calculate current month category totals
-        var currentCategoryTotals: [Category: Double] = [:]
+        var currentCategoryTotals: [ExpenseCategory: Double] = [:]
         for expense in currentMonthExpenses {
             currentCategoryTotals[expense.category, default: 0] += expense.price
         }
         
         // Calculate previous month category totals
-        var previousCategoryTotals: [Category: Double] = [:]
+        var previousCategoryTotals: [ExpenseCategory: Double] = [:]
         for expense in previousMonthExpenses {
             previousCategoryTotals[expense.category, default: 0] += expense.price
         }
         
         // Create trend data for each category
-        for category in Category.allCases {
+        let allCategories = Set(currentCategoryTotals.keys).union(previousCategoryTotals.keys)
+        for category in allCategories {
             let currentAmount = currentCategoryTotals[category] ?? 0
             let previousAmount = previousCategoryTotals[category] ?? 0
             

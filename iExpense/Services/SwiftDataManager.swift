@@ -16,7 +16,8 @@ class SwiftDataManager {
     func createContainer() throws -> ModelContainer {
         let schema = Schema([
             ExpenseItem.self,
-            BudgetItem.self
+            BudgetItem.self,
+            CustomCategoryItem.self
         ])
         
         let modelConfiguration = ModelConfiguration(
@@ -63,7 +64,7 @@ class SwiftDataManager {
                 name: expense.title,
                 amount: expense.price,
                 date: expense.date,
-                categoryName: expense.category.rawValue,
+                categoryName: expense.category.id,
                 notes: notes
             )
             
@@ -144,7 +145,7 @@ class SwiftDataManager {
             name: expense.title,
             amount: expense.price,
             date: expense.date,
-            categoryName: expense.category.rawValue,
+            categoryName: expense.category.id,
             notes: notes
         )
         

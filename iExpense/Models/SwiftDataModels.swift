@@ -47,4 +47,25 @@ final class BudgetItem {
         formatter.dateFormat = "MM-yyyy"
         return formatter.string(from: date)
     }
-} 
+}
+
+@Model
+final class CustomCategoryItem {
+    @Attribute(.unique) var id: String
+    var name: String
+    var emoji: String
+    var createdAt: Date
+    var updatedAt: Date
+    
+    init(id: String = UUID().uuidString,
+         name: String,
+         emoji: String,
+         createdAt: Date = Date(),
+         updatedAt: Date = Date()) {
+        self.id = id
+        self.name = name
+        self.emoji = emoji
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+}

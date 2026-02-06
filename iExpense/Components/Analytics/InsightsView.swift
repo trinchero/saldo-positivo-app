@@ -7,13 +7,13 @@ extension SpendingInsight: Identifiable {
 
 /// A component that displays key spending statistics
 struct KeyStatisticsView: View {
-    let biggestExpenseCategory: (category: Category, amount: Double)?
+    let biggestExpenseCategory: (category: ExpenseCategory, amount: Double)?
     let totalSpent: Double
     let mostActiveSpendingPeriod: String?
     let currencyCode: String
     
     init(
-        biggestExpenseCategory: (category: Category, amount: Double)?,
+        biggestExpenseCategory: (category: ExpenseCategory, amount: Double)?,
         totalSpent: Double,
         mostActiveSpendingPeriod: String?,
         currencyCode: String? = nil
@@ -42,8 +42,13 @@ struct KeyStatisticsView: View {
                                 .fill(category.color)
                                 .frame(width: 10, height: 10)
                             
-                            Text(category.displayName)
-                                .font(.system(size: 18, weight: .bold))
+                            if let emoji = category.emoji {
+                                Text("\(emoji) \(category.displayName)")
+                                    .font(.system(size: 18, weight: .bold))
+                            } else {
+                                Text(category.displayName)
+                                    .font(.system(size: 18, weight: .bold))
+                            }
                         }
                     }
                     
@@ -98,7 +103,7 @@ struct KeyStatisticsView: View {
 /// A component that displays a collection of spending insights
 struct InsightsCardView: View {
     let insights: [SpendingInsight]
-    var onViewExpenses: ((Category?) -> Void)? = nil
+    var onViewExpenses: ((ExpenseCategory?) -> Void)? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -291,7 +296,7 @@ struct SpendingPatternView: View {
     VStack(spacing: 20) {
         // Key Statistics preview
         KeyStatisticsView(
-            biggestExpenseCategory: (Category.food, 450.50),
+            biggestExpenseCategory: (.system(.food), 450.50),
             totalSpent: 1850.25,
             mostActiveSpendingPeriod: "Wednesday"
         )
@@ -312,7 +317,7 @@ struct SpendingPatternView: View {
                 description: "Your food spending has increased by 20% compared to last month",
                 icon: "fork.knife",
                 color: .red,
-                category: .food
+                category: .system(.food)
             )
         ])
         

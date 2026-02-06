@@ -179,10 +179,21 @@ struct AnalyticsView: View {
             
             // Auto-generated insights
             InsightsCardView(insights: analyticsViewModel.insights, onViewExpenses: { category in
+                let payload: String
+                if let category {
+                    switch category.kind {
+                    case .system:
+                        payload = category.systemRaw ?? category.id
+                    case .custom:
+                        payload = "custom:\(category.id)"
+                    }
+                } else {
+                    payload = ""
+                }
                 NotificationCenter.default.post(
                     name: NSNotification.Name("SwitchToExpensesTab"),
                     object: nil,
-                    userInfo: ["category": category?.rawValue ?? ""]
+                    userInfo: ["category": payload]
                 )
             })
             

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CategoryButton: View {
-    let category: Category
+    let category: ExpenseCategory
     let isSelected: Bool
     let action: () -> Void
     
@@ -15,10 +15,15 @@ struct CategoryButton: View {
                         .fill(category.color)
                         .frame(width: 56, height: 56)
                     
-                    // Icon
-                    Image(systemName: category.iconName)
-                        .font(.system(size: 22))
-                        .foregroundColor(.white)
+                    // Icon or emoji
+                    if let emoji = category.emoji {
+                        Text(emoji)
+                            .font(.system(size: 22))
+                    } else if let iconName = category.iconName {
+                        Image(systemName: iconName)
+                            .font(.system(size: 22))
+                            .foregroundColor(.white)
+                    }
                     
                     // Selection indicator
                     if isSelected {
@@ -51,12 +56,12 @@ struct CategoryButton: View {
 #Preview(traits: .sizeThatFitsLayout) {
     HStack(spacing: 20) {
         CategoryButton(
-            category: .food,
+            category: .system(.food),
             isSelected: true,
             action: {}
         )
         CategoryButton(
-            category: .transportation,
+            category: .system(.transportation),
             isSelected: false,
             action: {}
         )

@@ -1,8 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct ExpensesListView: View {
     @ObservedObject var viewModel: ExpenseViewModel
     @ObservedObject var analyticsViewModel: AnalyticsViewModel
+    @Query private var customCategories: [CustomCategoryItem]
     @State private var recentlyDeletedExpenses: [Expense] = []
     @State private var showUndoSnackbar: Bool = false
     @State private var undoTimer: Timer? = nil
@@ -11,14 +13,21 @@ struct ExpensesListView: View {
     @State private var selectedSortOption: SortOption = .dateDescending
     @State private var searchText: String = ""
     @State private var showEmptyState: Bool = false
-    @State private var selectedCategories: Set<Category> = Set(Category.allCases)
+    @State private var selectedCategories: Set<ExpenseCategory> = Set(CategoryProvider.systemCategories())
     @State private var isSearchActive = false
     @State private var groupingMode: GroupingMode = .category
+    @State private var didSetInitialCategories = false
     
     // Animation states
     @State private var isListLoaded = false
     
     private let monthHistoryLength = 61 // include current month plus ~5 years of history
+
+    init(viewModel: ExpenseViewModel, analyticsViewModel: AnalyticsViewModel) {
+        self.viewModel = viewModel
+        self.analyticsViewModel = analyticsViewModel
+        _customCategories = Query()
+    }
 
     enum SortOption: String, CaseIterable, Identifiable {
         case dateDescending = "Newest First"
@@ -71,11 +80,11 @@ struct ExpensesListView: View {
         return result
     }
     
-    private var groupedExpenses: [Category: [Expense]] {
+    private var groupedExpenses: [ExpenseCategory: [Expense]] {
         Dictionary(grouping: filteredExpenses) { $0.category }
     }
     
-    private var visibleCategories: [Category] {
+    private var visibleCategories: [ExpenseCategory] {
         let categories = Array(groupedExpenses.keys).sorted(by: { $0.displayName < $1.displayName })
         return categories
     }
@@ -86,6 +95,10 @@ struct ExpensesListView: View {
 
     private var visibleDays: [Date] {
         groupedByDay.keys.sorted(by: { $0 > $1 })
+    }
+
+    private var allCategories: [ExpenseCategory] {
+        CategoryProvider.combinedCategories(custom: customCategories)
     }
 
     var body: some View {
@@ -127,16 +140,21 @@ struct ExpensesListView: View {
                                         }
                                     } header: {
                                         HStack {
-                                            // Fixed-width icon container
-                                            ZStack {
-                                                Circle()
-                                                    .fill(category.color)
-                                                    .frame(width: 28, height: 28)
-                                                
-                                                Image(systemName: categoryIcon(for: category))
+                                        // Fixed-width icon container
+                                        ZStack {
+                                            Circle()
+                                                .fill(category.color)
+                                                .frame(width: 28, height: 28)
+                                            
+                                            if let emoji = category.emoji {
+                                                Text(emoji)
+                                                    .font(.caption)
+                                            } else if let iconName = category.iconName {
+                                                Image(systemName: iconName)
                                                     .foregroundColor(.white)
                                                     .font(.caption)
                                             }
+                                        }
                                             
                                             Text(category.displayName)
                                                 .font(.headline)
@@ -228,7 +246,7 @@ struct ExpensesListView: View {
                         }
                         
                         Button(action: {
-                            let newExpense = Expense(title: "", price: 0, date: Date(), category: .food)
+                            let newExpense = Expense(title: "", price: 0, date: Date(), category: .system(.food))
                             selectedExpenseToEdit = newExpense
                         }) {
                             Image(systemName: "plus")
@@ -248,12 +266,23 @@ struct ExpensesListView: View {
                         isListLoaded = true
                     }
                 }
+                
+                applyInitialCategorySelectionIfNeeded()
+            }
+            .onChange(of: customCategories) {
+                applyInitialCategorySelectionIfNeeded()
             }
             .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToExpensesTab"))) { notification in
-                if let raw = notification.userInfo?["category"] as? String,
-                   let category = Category(rawValue: raw),
-                   !raw.isEmpty {
-                    selectedCategories = [category]
+                guard let raw = notification.userInfo?["category"] as? String,
+                      !raw.isEmpty else { return }
+                if raw.hasPrefix("custom:") {
+                    let id = String(raw.dropFirst("custom:".count))
+                    if let custom = customCategories.first(where: { $0.id == id }) {
+                        selectedCategories = [.custom(id: custom.id, name: custom.name, emoji: custom.emoji)]
+                        searchText = ""
+                    }
+                } else if let category = Category(rawValue: raw) {
+                    selectedCategories = [.system(category)]
                     searchText = ""
                 }
             }
@@ -426,7 +455,7 @@ struct ExpensesListView: View {
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
-            } else if selectedCategories.count < Category.allCases.count {
+            } else if selectedCategories.count < allCategories.count {
                 Text("Try selecting more categories in the filter")
                     .font(.body)
                     .foregroundColor(.secondary)
@@ -434,7 +463,7 @@ struct ExpensesListView: View {
                     .padding(.horizontal, 40)
                 
                 Button(action: {
-                    selectedCategories = Set(Category.allCases)
+                    selectedCategories = Set(allCategories)
                 }) {
                     Text("Reset Filters")
                         .foregroundColor(.accentColor)
@@ -454,7 +483,7 @@ struct ExpensesListView: View {
                     .padding(.horizontal, 40)
                 
                 Button(action: {
-                    let newExpense = Expense(title: "", price: 0, date: Date(), category: .food)
+                    let newExpense = Expense(title: "", price: 0, date: Date(), category: .system(.food))
                     selectedExpenseToEdit = newExpense
                 }) {
                     let addExpenseLabel: some View =
@@ -508,33 +537,18 @@ struct ExpensesListView: View {
         recentlyDeletedExpenses.removeAll()
         showUndoSnackbar = false
     }
-    
-    private func categoryIcon(for category: Category) -> String {
-        switch category {
-        case .food:
-            return "cart.fill"
-        case .eatingOut:
-            return "fork.knife"
-        case .rent:
-            return "house.fill"
-        case .shopping:
-            return "bag.fill"
-        case .entertainment:
-            return "tv.fill"
-        case .transportation:
-            return "car.fill"
-        case .utilities:
-            return "bolt.fill"
-        case .subscriptions:
-            return "repeat"
-        case .healthcare:
-            return "heart.fill"
-        case .education:
-            return "book.fill"
-        case .others:
-            return "ellipsis"
+
+    private func applyInitialCategorySelectionIfNeeded() {
+        guard !didSetInitialCategories else { return }
+        didSetInitialCategories = true
+        let combined = Set(allCategories)
+        if selectedCategories.isEmpty {
+            selectedCategories = combined
+        } else if !combined.isSubset(of: selectedCategories) {
+            selectedCategories = combined
         }
     }
+    
 }
 
 #Preview {
@@ -615,12 +629,13 @@ struct ExpenseRowView: View {
 // MARK: - Filter Categories View
 
 struct FilterCategoriesView: View {
-    @Binding var selectedCategories: Set<Category>
+    @Binding var selectedCategories: Set<ExpenseCategory>
     @Environment(\.dismiss) private var dismiss
+    @Query private var customCategories: [CustomCategoryItem]
     
-    @State private var tempSelectedCategories: Set<Category>
+    @State private var tempSelectedCategories: Set<ExpenseCategory>
     
-    init(selectedCategories: Binding<Set<Category>>) {
+    init(selectedCategories: Binding<Set<ExpenseCategory>>) {
         self._selectedCategories = selectedCategories
         self._tempSelectedCategories = State(initialValue: selectedCategories.wrappedValue)
     }
@@ -630,7 +645,7 @@ struct FilterCategoriesView: View {
             VStack {
                 List {
                     Section {
-                        ForEach(Category.allCases, id: \.self) { category in
+                        ForEach(allCategories, id: \.id) { category in
                             HStack {
                                 // Fixed-width icon container
                                 ZStack {
@@ -638,9 +653,14 @@ struct FilterCategoriesView: View {
                                         .fill(category.color)
                                         .frame(width: 28, height: 28)
                                     
-                                    Image(systemName: categoryIcon(for: category))
-                                        .foregroundColor(.white)
-                                        .font(.caption)
+                                    if let emoji = category.emoji {
+                                        Text(emoji)
+                                            .font(.caption)
+                                    } else if let iconName = category.iconName {
+                                        Image(systemName: iconName)
+                                            .foregroundColor(.white)
+                                            .font(.caption)
+                                    }
                                 }
                                 
                                 Text(category.displayName)
@@ -734,31 +754,8 @@ struct FilterCategoriesView: View {
         }
     }
     
-    private func categoryIcon(for category: Category) -> String {
-        switch category {
-        case .food:
-            return "cart.fill"
-        case .eatingOut:
-            return "fork.knife"
-        case .rent:
-            return "house.fill"
-        case .shopping:
-            return "bag.fill"
-        case .entertainment:
-            return "tv.fill"
-        case .transportation:
-            return "car.fill"
-        case .utilities:
-            return "bolt.fill"
-        case .subscriptions:
-            return "repeat"
-        case .healthcare:
-            return "heart.fill"
-        case .education:
-            return "book.fill"
-        case .others:
-            return "ellipsis"
-        }
+    private var allCategories: [ExpenseCategory] {
+        CategoryProvider.combinedCategories(custom: customCategories)
     }
 }
 

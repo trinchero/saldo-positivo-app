@@ -206,7 +206,7 @@ struct BudgetStatusView: View {
 
 /// A component that displays budget recommendations
 struct BudgetRecommendationsView: View {
-    let biggestExpenseCategory: (category: Category, amount: Double)?
+    let biggestExpenseCategory: (category: ExpenseCategory, amount: Double)?
     let totalSpent: Double
     let currentBudget: Double
     let daysRemainingInMonth: Int
@@ -214,7 +214,7 @@ struct BudgetRecommendationsView: View {
     let currencyCode: String
     
     init(
-        biggestExpenseCategory: (category: Category, amount: Double)?,
+        biggestExpenseCategory: (category: ExpenseCategory, amount: Double)?,
         totalSpent: Double,
         currentBudget: Double,
         daysRemainingInMonth: Int,
@@ -247,9 +247,14 @@ struct BudgetRecommendationsView: View {
                                 Circle()
                                     .fill(category.color)
                                     .frame(width: 8, height: 8)
-                                
-                                Text(category.displayName)
-                                    .font(.system(size: 15, weight: .semibold))
+
+                                if let emoji = category.emoji {
+                                    Text("\(emoji) \(category.displayName)")
+                                        .font(.system(size: 15, weight: .semibold))
+                                } else {
+                                    Text(category.displayName)
+                                        .font(.system(size: 15, weight: .semibold))
+                                }
                             }
                         }
                         
@@ -405,7 +410,7 @@ struct BudgetHistoryView: View {
         
         // Budget Recommendations preview
         BudgetRecommendationsView(
-            biggestExpenseCategory: (Category.food, 450.50),
+            biggestExpenseCategory: (.system(.food), 450.50),
             totalSpent: 1875.50,
             currentBudget: 2500.00,
             daysRemainingInMonth: 14,

@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct CategoryGrid: View {
-    @Binding var selectedCategory: Category
+    let categories: [ExpenseCategory]
+    @Binding var selectedCategory: ExpenseCategory
     var onCategorySelected: (() -> Void)? = nil
     
     // Number of columns in the grid
@@ -13,7 +14,7 @@ struct CategoryGrid: View {
     
     var body: some View {
         LazyVGrid(columns: columns, spacing: 15) {
-            ForEach(Category.allCases, id: \.self) { category in
+            ForEach(categories, id: \.id) { category in
                 CategoryButton(
                     category: category,
                     isSelected: selectedCategory == category,
@@ -33,8 +34,9 @@ struct CategoryGrid: View {
 
 // An alternative version with a manual callback for cases where binding isn't appropriate
 struct CategoryGridWithCallback: View {
-    let selectedCategory: Category
-    let onCategorySelected: (Category) -> Void
+    let categories: [ExpenseCategory]
+    let selectedCategory: ExpenseCategory
+    let onCategorySelected: (ExpenseCategory) -> Void
     
     // Number of columns in the grid
     private let columns = [
@@ -45,7 +47,7 @@ struct CategoryGridWithCallback: View {
     
     var body: some View {
         LazyVGrid(columns: columns, spacing: 15) {
-            ForEach(Category.allCases, id: \.self) { category in
+            ForEach(categories, id: \.id) { category in
                 CategoryButton(
                     category: category,
                     isSelected: selectedCategory == category,
@@ -66,7 +68,10 @@ struct CategoryGridWithCallback: View {
             .font(.headline)
             .padding()
         
-        CategoryGrid(selectedCategory: .constant(.food))
+        CategoryGrid(
+            categories: CategoryProvider.systemCategories(),
+            selectedCategory: .constant(.system(.food))
+        )
             .padding()
             .background(Color(.secondarySystemBackground))
             .cornerRadius(12)

@@ -91,8 +91,8 @@ struct MonthlyTrendsView: View {
 /// A component that displays category trend information
 struct CategoryTrendsView: View {
     struct CategoryTrend: Identifiable {
-        var id: String { "\(category.rawValue)-\(month)-\(year)" }
-        let category: Category
+        var id: String { "\(category.id)-\(month)-\(year)" }
+        let category: ExpenseCategory
         let month: Int
         let year: Int
         let currentAmount: Double
@@ -154,8 +154,13 @@ struct CategoryTrendsView: View {
                 .fill(trend.category.color)
                 .frame(width: 12, height: 12)
             
-            Text(trend.category.displayName)
-                .font(.subheadline)
+            if let emoji = trend.category.emoji {
+                Text("\(emoji) \(trend.category.displayName)")
+                    .font(.subheadline)
+            } else {
+                Text(trend.category.displayName)
+                    .font(.subheadline)
+            }
             
             Spacer()
             
@@ -283,21 +288,21 @@ struct ProjectionView: View {
         // Category trends preview
         let categoryTrends = [
             CategoryTrendsView.CategoryTrend(
-                category: .food,
+                category: .system(.food),
                 month: 5,
                 year: 2025,
                 currentAmount: 450.50,
                 previousAmount: 380.25
             ),
             CategoryTrendsView.CategoryTrend(
-                category: .transportation,
+                category: .system(.transportation),
                 month: 5,
                 year: 2025,
                 currentAmount: 220.75,
                 previousAmount: 280.50
             ),
             CategoryTrendsView.CategoryTrend(
-                category: .entertainment,
+                category: .system(.entertainment),
                 month: 5,
                 year: 2025,
                 currentAmount: 180.25,

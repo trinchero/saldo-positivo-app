@@ -19,7 +19,7 @@ struct SwiftDataService {
             let context = container.mainContext
             
             // Create the regular Expense model for UserDefaults
-            let expense = Expense(title: title, price: price, date: date, category: category)
+            let expense = Expense(title: title, price: price, date: date, category: .system(category))
             
             // Let SwiftDataManager handle SwiftData operations
             try? SwiftDataManager.shared.saveExpense(expense, using: context)

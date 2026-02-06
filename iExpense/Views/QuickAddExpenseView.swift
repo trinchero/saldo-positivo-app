@@ -1,22 +1,25 @@
 import SwiftUI
+import SwiftData
 
 struct QuickAddExpenseView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var viewModel: ExpenseViewModel
     let onShowFullForm: (() -> Void)?
+    @Query private var customCategories: [CustomCategoryItem]
 
     @FocusState private var isAmountFocused: Bool
 
     @State private var title: String = ""
     @State private var price: String = ""
-    @State private var selectedCategory: Category
+    @State private var selectedCategory: ExpenseCategory
     @State private var selectedDate: Date = Date()
     @State private var notes: String = ""
     @State private var showNotes: Bool = false
     @State private var showInlineValidation = false
     @State private var validationMessage = ""
     @State private var animateSuccess = false
+    @State private var didSetInitialCategory = false
 
     private var currencySymbol: String {
         let locale = Locale.current
@@ -27,10 +30,9 @@ struct QuickAddExpenseView: View {
     init(viewModel: ExpenseViewModel, onShowFullForm: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.onShowFullForm = onShowFullForm
-        let lastUsed = UserDefaults.standard.string(forKey: "lastUsedCategory")
         let defaultCategory = UserDefaults.standard.string(forKey: "defaultCategory") ?? Category.food.rawValue
-        let initial = Category(rawValue: lastUsed ?? defaultCategory) ?? .food
-        _selectedCategory = State(initialValue: initial)
+        let initial = Category(rawValue: defaultCategory) ?? .food
+        _selectedCategory = State(initialValue: .system(initial))
     }
 
     var body: some View {
@@ -65,7 +67,10 @@ struct QuickAddExpenseView: View {
                         }
 
                         CardView(title: NSLocalizedString("Category", comment: "Category")) {
-                            CategoryGrid(selectedCategory: $selectedCategory)
+                            CategoryGrid(
+                                categories: allCategories,
+                                selectedCategory: $selectedCategory
+                            )
                                 .padding(.horizontal)
                         }
 
@@ -106,6 +111,7 @@ struct QuickAddExpenseView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                     isAmountFocused = true
                 }
+                applyLastUsedCategoryIfNeeded()
             }
         }
     }
@@ -245,7 +251,7 @@ struct QuickAddExpenseView: View {
             category: selectedCategory
         )
 
-        UserDefaults.standard.set(selectedCategory.rawValue, forKey: "lastUsedCategory")
+        UserDefaults.standard.set(lastUsedCategoryKey(selectedCategory), forKey: "lastUsedCategoryKey")
 
         if !notes.isEmpty {
             let notesKey = "notes_\(newExpense.id.uuidString)"
@@ -284,6 +290,45 @@ struct QuickAddExpenseView: View {
                 .padding(.bottom, 18)
         }
         .transition(.move(edge: .bottom).combined(with: .opacity))
+    }
+
+    private var allCategories: [ExpenseCategory] {
+        CategoryProvider.combinedCategories(custom: customCategories)
+    }
+
+    private func applyLastUsedCategoryIfNeeded() {
+        guard !didSetInitialCategory else { return }
+        didSetInitialCategory = true
+        if let key = UserDefaults.standard.string(forKey: "lastUsedCategoryKey"),
+           let resolved = resolveCategory(from: key) {
+            selectedCategory = resolved
+            return
+        }
+        if let legacy = UserDefaults.standard.string(forKey: "lastUsedCategory"),
+           let legacyCategory = Category(rawValue: legacy) {
+            selectedCategory = .system(legacyCategory)
+        }
+    }
+
+    private func resolveCategory(from key: String) -> ExpenseCategory? {
+        if key.hasPrefix("custom:") {
+            let id = key.replacingOccurrences(of: "custom:", with: "")
+            return allCategories.first(where: { $0.id == id })
+        }
+        if key.hasPrefix("system:") {
+            let raw = key.replacingOccurrences(of: "system:", with: "")
+            return allCategories.first(where: { $0.id == raw })
+        }
+        return nil
+    }
+
+    private func lastUsedCategoryKey(_ category: ExpenseCategory) -> String {
+        switch category.kind {
+        case .system:
+            return "system:\(category.id)"
+        case .custom:
+            return "custom:\(category.id)"
+        }
     }
 
     private var successOverlay: some View {

@@ -30,7 +30,7 @@ struct AddExpenseSiriIntent: AppIntent {
             title: title,
             price: price,
             date: Date(),
-            category: category
+            category: .system(category)
         )
         expenses.append(newExpense)
         StorageService.saveExpenses(expenses)

@@ -27,6 +27,9 @@ struct SettingsView: View {
                 // Default Settings Section
                 defaultSettingsSection
                 
+                // Categories Section
+                categoriesSection
+                
                 // Data Management Section
                 dataManagementSection
                 
@@ -119,6 +122,16 @@ struct SettingsView: View {
     private var defaultSettingsSection: some View {
         Section(header: Text("Default Settings")) {
             categoryPicker
+        }
+    }
+
+    private var categoriesSection: some View {
+        Section(header: Text("Categories")) {
+            NavigationLink {
+                CategoriesSettingsView()
+            } label: {
+                Text("Manage Categories")
+            }
         }
     }
     

@@ -272,12 +272,27 @@ struct HomeView: View {
                         HStack(spacing: 12) {
                             // Icon and category
                             HStack(spacing: 8) {
-                                Image(systemName: categoryIcon(for: category))
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.white)
-                                    .frame(width: 30, height: 30)
-                                    .background(category.color)
-                                    .cornerRadius(8)
+                                if let iconName = category.iconName {
+                                    Image(systemName: iconName)
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.white)
+                                        .frame(width: 30, height: 30)
+                                        .background(category.color)
+                                        .cornerRadius(8)
+                                } else if let emoji = category.emoji {
+                                    Text(emoji)
+                                        .font(.system(size: 16))
+                                        .frame(width: 30, height: 30)
+                                        .background(category.color)
+                                        .cornerRadius(8)
+                                } else {
+                                    Image(systemName: "tag")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.white)
+                                        .frame(width: 30, height: 30)
+                                        .background(category.color)
+                                        .cornerRadius(8)
+                                }
                                 
                                 Text(category.displayName)
                                     .font(.subheadline)
@@ -355,13 +370,21 @@ struct HomeView: View {
                             showingEditExpense = true
                         } label: {
                             HStack(spacing: 12) {
-                                // Category icon
-                                Image(systemName: categoryIcon(for: expense.category))
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.white)
-                                    .frame(width: 28, height: 28)
-                                    .background(expense.category.color)
-                                    .cornerRadius(6)
+                                // Category icon or emoji
+                                ZStack {
+                                    if let emoji = expense.category.emoji {
+                                        Text(emoji)
+                                            .font(.system(size: 14))
+                                            .frame(width: 28, height: 28)
+                                    } else if let iconName = expense.category.iconName {
+                                        Image(systemName: iconName)
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.white)
+                                            .frame(width: 28, height: 28)
+                                    }
+                                }
+                                .background(expense.category.color)
+                                .cornerRadius(6)
                                 
                                 // Title and date
                                 VStack(alignment: .leading, spacing: 2) {
@@ -432,31 +455,8 @@ struct HomeView: View {
     
     // MARK: - Helper Methods
     
-    private func categoryIcon(for category: Category) -> String {
-        switch category {
-        case .food:
-            return "cart.fill"
-        case .eatingOut:
-            return "fork.knife"
-        case .rent:
-            return "house.fill"
-        case .shopping:
-            return "bag.fill"
-        case .entertainment:
-            return "tv.fill"
-        case .transportation:
-            return "car.fill"
-        case .utilities:
-            return "bolt.fill"
-        case .subscriptions:
-            return "repeat"
-        case .healthcare:
-            return "heart.fill"
-        case .education:
-            return "book.fill"
-        case .others:
-            return "ellipsis"
-        }
+    private func categoryIcon(for category: ExpenseCategory) -> String? {
+        category.iconName
     }
 }
 

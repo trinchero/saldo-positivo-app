@@ -30,7 +30,7 @@ struct AddQuickExpenseIntent: AppIntent {
             title: title,
             price: price,
             date: Date(),
-            category: Category(rawValue: category) ?? .others
+            category: .system(Category(rawValue: category) ?? .others)
         )
         expenses.append(newExpense)
         StorageService.saveExpenses(expenses)

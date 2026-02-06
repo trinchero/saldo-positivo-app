@@ -65,7 +65,7 @@ func getMonthlyBudget() -> Double {
 struct ExpenseEntry: TimelineEntry {
     let date: Date
     let totalSpent: Double
-    let spendingByCategory: [Category: Double]
+    let spendingByCategory: [ExpenseCategory: Double]
     let monthlyBudget: Double
     
     // Computed properties for the widget
@@ -77,7 +77,7 @@ struct ExpenseEntry: TimelineEntry {
         monthlyBudget > 0 ? min(1.0, totalSpent / monthlyBudget) : 0
     }
     
-    var topCategories: [(Category, Double)] {
+    var topCategories: [(ExpenseCategory, Double)] {
         Array(spendingByCategory.sorted { $0.value > $1.value }.prefix(5))
     }
     
@@ -145,7 +145,7 @@ struct ExpenseQuickAddProvider: AppIntentTimelineProvider {
 
         let total = filteredExpenses.reduce(0) { $0 + $1.price }
 
-        var categoryTotals: [Category: Double] = [:]
+        var categoryTotals: [ExpenseCategory: Double] = [:]
         for expense in filteredExpenses {
             categoryTotals[expense.category, default: 0] += expense.price
         }
@@ -373,33 +373,6 @@ struct iExpenseWidgetEntryView: View {
         .padding(16)
     }
     
-    // Helper function to get category icon
-    private func categoryIcon(for category: Category) -> String {
-        switch category {
-        case .food:
-            return "cart.fill"
-        case .eatingOut:
-            return "fork.knife"
-        case .rent:
-            return "house.fill"
-        case .shopping:
-            return "bag.fill"
-        case .entertainment:
-            return "tv.fill"
-        case .transportation:
-            return "car.fill"
-        case .utilities:
-            return "bolt.fill"
-        case .subscriptions:
-            return "repeat"
-        case .healthcare:
-            return "heart.fill"
-        case .education:
-            return "book.fill"
-        case .others:
-            return "ellipsis"
-        }
-    }
 }
 
 struct iExpenseWidgetExtension: Widget {
@@ -431,11 +404,11 @@ extension ShapeStyle where Self == Color {
         date: .now,
         totalSpent: 780.50,
         spendingByCategory: [
-            .food: 250.00,
-            .shopping: 175.75,
-            .transportation: 80.25,
-            .entertainment: 120.50,
-            .utilities: 154.00
+            .system(.food): 250.00,
+            .system(.shopping): 175.75,
+            .system(.transportation): 80.25,
+            .system(.entertainment): 120.50,
+            .system(.utilities): 154.00
         ],
         monthlyBudget: 1000.00
     )
@@ -448,11 +421,11 @@ extension ShapeStyle where Self == Color {
         date: .now,
         totalSpent: 780.50,
         spendingByCategory: [
-            .food: 250.00,
-            .shopping: 175.75,
-            .transportation: 80.25,
-            .entertainment: 120.50,
-            .utilities: 154.00
+            .system(.food): 250.00,
+            .system(.shopping): 175.75,
+            .system(.transportation): 80.25,
+            .system(.entertainment): 120.50,
+            .system(.utilities): 154.00
         ],
         monthlyBudget: 1000.00
     )
@@ -465,13 +438,12 @@ extension ShapeStyle where Self == Color {
         date: .now,
         totalSpent: 780.50,
         spendingByCategory: [
-            .food: 250.00,
-            .shopping: 175.75,
-            .transportation: 80.25,
-            .entertainment: 120.50,
-            .utilities: 154.00
+            .system(.food): 250.00,
+            .system(.shopping): 175.75,
+            .system(.transportation): 80.25,
+            .system(.entertainment): 120.50,
+            .system(.utilities): 154.00
         ],
         monthlyBudget: 1000.00
     )
 }
-
