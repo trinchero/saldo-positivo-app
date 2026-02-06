@@ -67,6 +67,9 @@ struct AnalyticsView: View {
     
     private var overviewTabContent: some View {
         VStack(spacing: 20) {
+            if analyticsViewModel.totalSpent == 0 {
+                emptyOverviewState
+            } else {
             // Summary Cards
             summaryCardsGrid
             
@@ -88,7 +91,38 @@ struct AnalyticsView: View {
                 spendingByCategory: analyticsViewModel.spendingByCategory,
                 totalSpent: analyticsViewModel.totalSpent
             )
+            }
         }
+    }
+
+    private var emptyOverviewState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "tray")
+                .font(.system(size: 48))
+                .foregroundColor(.secondary)
+            Text(NSLocalizedString("No expenses yet", comment: "No expenses yet"))
+                .font(.headline)
+            Text(NSLocalizedString("Add your first expense to see insights.", comment: "Empty analytics subtitle"))
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+            Button(action: {
+                NotificationCenter.default.post(name: NSNotification.Name("SwitchToExpensesTab"), object: nil)
+            }) {
+                Label(NSLocalizedString("Add Expense", comment: "Add expense"), systemImage: "plus")
+                    .foregroundColor(.white)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 18)
+                    .background(Color.accentColor)
+                    .clipShape(Capsule())
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.secondarySystemBackground))
+        )
     }
     
     private var summaryCardsGrid: some View {

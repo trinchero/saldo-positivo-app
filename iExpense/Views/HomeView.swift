@@ -11,6 +11,8 @@ struct HomeView: View {
     @State private var animateCards = false
     @State private var selectedExpenseToEdit: Expense? = nil
     @State private var showingEditExpense = false
+    @State private var ringProgress: Double = 0
+    @State private var overBudgetPulse = false
     
     private let recentDaysToShow = 7
     
@@ -55,6 +57,19 @@ struct HomeView: View {
                 withAnimation(.easeOut(duration: 0.5).delay(0.1)) {
                     animateCards = true
                 }
+                updateRingProgress()
+            }
+            .onChange(of: analyticsViewModel.totalSpent) { _, _ in
+                updateRingProgress()
+            }
+            .onChange(of: analyticsViewModel.currentBudget) { _, _ in
+                updateRingProgress()
+            }
+            .onChange(of: analyticsViewModel.selectedMonth) { _, _ in
+                updateRingProgress()
+            }
+            .onChange(of: analyticsViewModel.selectedYear) { _, _ in
+                updateRingProgress()
             }
         }
     }
@@ -111,6 +126,15 @@ struct HomeView: View {
                             .background(Color.red.opacity(0.15))
                             .foregroundColor(.red)
                             .clipShape(Capsule())
+                            .scaleEffect(overBudgetPulse ? 1.06 : 1.0)
+                            .onAppear {
+                                withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
+                                    overBudgetPulse = true
+                                }
+                            }
+                            .onDisappear {
+                                overBudgetPulse = false
+                            }
                     }
                 }
             }
@@ -123,7 +147,7 @@ struct HomeView: View {
                             .frame(width: 120, height: 120)
 
                         Circle()
-                            .trim(from: 0, to: progress)
+                            .trim(from: 0, to: ringProgress)
                             .stroke(progressColor, style: StrokeStyle(lineWidth: 12, lineCap: .round))
                             .frame(width: 120, height: 120)
                             .rotationEffect(.degrees(-90))
@@ -174,7 +198,7 @@ struct HomeView: View {
                         )
                         BudgetPill(
                             title: NSLocalizedString("Used", comment: "Budget used label"),
-                            value: "\(Int(progress * 100))%"
+                            value: "\(Int(ringProgress * 100))%"
                         )
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -569,6 +593,15 @@ struct HomeView: View {
     
     private func categoryIcon(for category: ExpenseCategory) -> String? {
         category.iconName
+    }
+
+    private func updateRingProgress() {
+        let budget = analyticsViewModel.currentBudget
+        let spent = analyticsViewModel.totalSpent
+        let next = budget > 0 ? min(1.0, spent / budget) : 0
+        withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) {
+            ringProgress = next
+        }
     }
 }
 

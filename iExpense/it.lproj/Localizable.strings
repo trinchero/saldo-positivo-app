@@ -1,5 +1,14 @@
 "Settings" = "Impostazioni";
 "Website" = "Sito web";
+"Amount & Category" = "Importo e categoria";
+"Details" = "Dettagli";
+"Enter amount and choose a category." = "Inserisci importo e scegli una categoria.";
+"Add title, date, and optional notes." = "Aggiungi titolo, data e note opzionali.";
+"Step 1 of 2" = "Step 1 di 2";
+"Step 2 of 2" = "Step 2 di 2";
+"Next" = "Avanti";
+"Back" = "Indietro";
+"Add your first expense to see insights." = "Aggiungi la prima spesa per vedere gli insight.";
 "Appearance" = "Aspetto";
 "Theme" = "Tema";
 "Language" = "Lingua";

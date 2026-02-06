@@ -20,6 +20,12 @@ struct QuickAddExpenseView: View {
     @State private var validationMessage = ""
     @State private var animateSuccess = false
     @State private var didSetInitialCategory = false
+    @State private var step: QuickAddStep = .amountCategory
+
+    private enum QuickAddStep {
+        case amountCategory
+        case details
+    }
 
     private var currencySymbol: String {
         let locale = Locale.current
@@ -45,38 +51,40 @@ struct QuickAddExpenseView: View {
                     VStack(spacing: 16) {
                         headerSection
 
-                        CardView(title: NSLocalizedString("Amount", comment: "Amount")) {
-                            CurrencyFormField(
-                                label: NSLocalizedString("Amount", comment: "Amount"),
-                                amount: $price,
-                                currencySymbol: currencySymbol,
-                                clearAction: { price = "" }
-                            )
-                            .padding(.horizontal)
-                            .focused($isAmountFocused)
-                        }
-
-                        CardView(title: NSLocalizedString("Title", comment: "Title")) {
-                            TextFormField(
-                                label: NSLocalizedString("Title", comment: "Title"),
-                                text: $title,
-                                placeholder: NSLocalizedString("Expense title", comment: "Expense title"),
-                                leadingIcon: "pencil"
-                            )
-                            .padding(.horizontal)
-                        }
-
-                        CardView(title: NSLocalizedString("Category", comment: "Category")) {
-                            CategoryGrid(
-                                categories: allCategories,
-                                selectedCategory: $selectedCategory
-                            )
+                        if step == .amountCategory {
+                            CardView(title: NSLocalizedString("Amount", comment: "Amount")) {
+                                CurrencyFormField(
+                                    label: NSLocalizedString("Amount", comment: "Amount"),
+                                    amount: $price,
+                                    currencySymbol: currencySymbol,
+                                    clearAction: { price = "" }
+                                )
                                 .padding(.horizontal)
+                                .focused($isAmountFocused)
+                            }
+
+                            CardView(title: NSLocalizedString("Category", comment: "Category")) {
+                                CategoryGrid(
+                                    categories: allCategories,
+                                    selectedCategory: $selectedCategory
+                                )
+                                    .padding(.horizontal)
+                            }
+                        } else {
+                            CardView(title: NSLocalizedString("Title", comment: "Title")) {
+                                TextFormField(
+                                    label: NSLocalizedString("Title", comment: "Title"),
+                                    text: $title,
+                                    placeholder: NSLocalizedString("Expense title", comment: "Expense title"),
+                                    leadingIcon: "pencil"
+                                )
+                                .padding(.horizontal)
+                            }
+
+                            dateSection
+
+                            notesSection
                         }
-
-                        dateSection
-
-                        notesSection
 
                     }
                     .padding(.horizontal)
@@ -96,15 +104,30 @@ struct QuickAddExpenseView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(NSLocalizedString("Cancel", comment: "Cancel")) {
-                        dismiss()
+                    if step == .details {
+                        Button(NSLocalizedString("Back", comment: "Back")) {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                                step = .amountCategory
+                            }
+                        }
+                    } else {
+                        Button(NSLocalizedString("Cancel", comment: "Cancel")) {
+                            dismiss()
+                        }
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(NSLocalizedString("Save", comment: "Save")) {
-                        saveExpense()
+                    if step == .amountCategory {
+                        Button(NSLocalizedString("Next", comment: "Next")) {
+                            goToDetails()
+                        }
+                        .disabled(!canProceedToDetails)
+                    } else {
+                        Button(NSLocalizedString("Save", comment: "Save")) {
+                            saveExpense()
+                        }
+                        .disabled(!isFormValid)
                     }
-                    .disabled(!isFormValid)
                 }
             }
             .onAppear {
@@ -113,15 +136,27 @@ struct QuickAddExpenseView: View {
                 }
                 applyLastUsedCategoryIfNeeded()
             }
+            .onChange(of: step) { _, newValue in
+                isAmountFocused = newValue == .amountCategory
+            }
         }
     }
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(NSLocalizedString("Quickly add an expense", comment: "Quick add headline"))
+            Text(step == .amountCategory
+                 ? NSLocalizedString("Amount & Category", comment: "Amount & category step title")
+                 : NSLocalizedString("Details", comment: "Details step title"))
                 .font(.headline)
-            Text(NSLocalizedString("Most fields are optional - just enter an amount.", comment: "Quick add subheadline"))
+            Text(step == .amountCategory
+                 ? NSLocalizedString("Enter amount and choose a category.", comment: "Step 1 subtitle")
+                 : NSLocalizedString("Add title, date, and optional notes.", comment: "Step 2 subtitle"))
                 .font(.subheadline)
+                .foregroundColor(.secondary)
+            Text(step == .amountCategory
+                 ? NSLocalizedString("Step 1 of 2", comment: "Step 1 label")
+                 : NSLocalizedString("Step 2 of 2", comment: "Step 2 label"))
+                .font(.caption)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -215,6 +250,31 @@ struct QuickAddExpenseView: View {
         !price.isEmpty && !title.isEmpty
     }
 
+    private var canProceedToDetails: Bool {
+        let normalizedPrice = price.replacingOccurrences(of: ",", with: ".")
+        if normalizedPrice.isEmpty { return false }
+        return Double(normalizedPrice) != nil
+    }
+
+    private func goToDetails() {
+        let normalizedPrice = price.replacingOccurrences(of: ",", with: ".")
+        guard !normalizedPrice.isEmpty else {
+            validationMessage = NSLocalizedString("Please enter the expense amount.", comment: "Validation")
+            showValidationToast()
+            HapticFeedback.error()
+            return
+        }
+        guard Double(normalizedPrice) != nil else {
+            validationMessage = NSLocalizedString("Please enter a valid amount.", comment: "Validation")
+            showValidationToast()
+            HapticFeedback.error()
+            return
+        }
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+            step = .details
+        }
+    }
+
     private func saveExpense() {
         showInlineValidation = false
         
@@ -250,8 +310,6 @@ struct QuickAddExpenseView: View {
             date: selectedDate,
             category: selectedCategory
         )
-
-        UserDefaults.standard.set(lastUsedCategoryKey(selectedCategory), forKey: "lastUsedCategoryKey")
 
         if !notes.isEmpty {
             let notesKey = "notes_\(newExpense.id.uuidString)"
@@ -302,27 +360,6 @@ struct QuickAddExpenseView: View {
         if let raw = UserDefaults.standard.string(forKey: "defaultCategory"),
            let defaultCategory = Category(rawValue: raw) {
             selectedCategory = .system(defaultCategory)
-        }
-    }
-
-    private func resolveCategory(from key: String) -> ExpenseCategory? {
-        if key.hasPrefix("custom:") {
-            let id = key.replacingOccurrences(of: "custom:", with: "")
-            return allCategories.first(where: { $0.id == id })
-        }
-        if key.hasPrefix("system:") {
-            let raw = key.replacingOccurrences(of: "system:", with: "")
-            return allCategories.first(where: { $0.id == raw })
-        }
-        return nil
-    }
-
-    private func lastUsedCategoryKey(_ category: ExpenseCategory) -> String {
-        switch category.kind {
-        case .system:
-            return "system:\(category.id)"
-        case .custom:
-            return "custom:\(category.id)"
         }
     }
 

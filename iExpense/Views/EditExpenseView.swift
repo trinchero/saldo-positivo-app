@@ -158,7 +158,6 @@ struct EditExpenseView: View {
                             Button(action: {
                                 hideKeyboard()
                                 deleteExpense()
-                                HapticFeedback.impact(style: .medium)
                                 dismiss()
                             }) {
                                 let deleteButton: some View = HStack {

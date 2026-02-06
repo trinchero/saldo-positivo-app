@@ -112,7 +112,6 @@ struct MonthYearPicker: View {
                         // Update selection
                         selectedMonth = monthYear.month
                         selectedYear = monthYear.year
-                        HapticFeedback.selection()
                         onMonthYearChanged?()
                     }
                 }

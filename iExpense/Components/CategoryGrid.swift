@@ -22,7 +22,6 @@ struct CategoryGrid: View {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                             selectedCategory = category
                         }
-                        HapticFeedback.impact()
                         onCategorySelected?()
                     }
                 )
@@ -52,7 +51,6 @@ struct CategoryGridWithCallback: View {
                     category: category,
                     isSelected: selectedCategory == category,
                     action: {
-                        HapticFeedback.impact()
                         onCategorySelected(category)
                     }
                 )

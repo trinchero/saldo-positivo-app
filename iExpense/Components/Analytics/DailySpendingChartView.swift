@@ -40,14 +40,6 @@ struct DailySpendingChartView: View {
                         )
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 5]))
                         .foregroundStyle(Color.green)
-                        .annotation(position: .top, alignment: .trailing) {
-                            Text("Avg")
-                                .font(.caption)
-                                .foregroundColor(.green)
-                                .padding(4)
-                                .background(Color(.secondarySystemBackground))
-                                .cornerRadius(4)
-                        }
                     }
                 }
                 .chartXAxis {

@@ -1,5 +1,14 @@
 "Settings" = "Settings";
 "Website" = "Website";
+"Amount & Category" = "Amount & Category";
+"Details" = "Details";
+"Enter amount and choose a category." = "Enter amount and choose a category.";
+"Add title, date, and optional notes." = "Add title, date, and optional notes.";
+"Step 1 of 2" = "Step 1 of 2";
+"Step 2 of 2" = "Step 2 of 2";
+"Next" = "Next";
+"Back" = "Back";
+"Add your first expense to see insights." = "Add your first expense to see insights.";
 "Appearance" = "Appearance";
 "Theme" = "Theme";
 "Language" = "Language";

@@ -53,17 +53,11 @@ struct DatePickerCard: View {
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .labelsHidden()
                                 .padding(.horizontal)
-                                .onChange(of: selectedDate) {
-                                    HapticFeedback.selection()
-                                }
                         } else {
                             DatePicker("", selection: $selectedDate, in: ...maxDate, displayedComponents: .date)
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .labelsHidden()
                                 .padding(.horizontal)
-                                .onChange(of: selectedDate) {
-                                    HapticFeedback.selection()
-                                }
                         }
                     }
                     .opacity(isExpanded ? 1 : 0)
