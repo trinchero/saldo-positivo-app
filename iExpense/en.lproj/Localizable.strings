@@ -48,6 +48,17 @@
 "Recent Expenses" = "Recent Expenses";
 "Hide" = "Hide";
 "Show" = "Show";
+"Budget Summary" = "Budget Summary";
+"Set Budget" = "Set Budget";
+"Budget not set for this month" = "Budget not set for this month";
+"Remaining" = "Remaining";
+"Over Budget" = "Over Budget";
+"%@ per day" = "%@ per day";
+"Per day" = "Per day";
+"Day left" = "Day left";
+"Used" = "Used";
+"Spent" = "Spent";
+"Budget" = "Budget";
 "No expenses yet" = "No expenses yet";
 "View All Expenses" = "View All Expenses";
 

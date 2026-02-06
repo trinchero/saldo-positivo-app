@@ -15,29 +15,35 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationView {
-            Form {
-                // Appearance Section
-                appearanceSection
+            VStack(spacing: 0) {
+                settingsHeader
+                    .padding(.horizontal)
+                    .padding(.top, 4)
 
-                // Language Section
-                languageSection
-                
-                // Currency Section
-                currencySection
-                
-                // Default Settings Section
-                defaultSettingsSection
-                
-                // Categories Section
-                categoriesSection
-                
-                // Data Management Section
-                dataManagementSection
-                
-                // About Section
-                aboutSection
+                Form {
+                    // Appearance Section
+                    appearanceSection
+
+                    // Language Section
+                    languageSection
+                    
+                    // Currency Section
+                    currencySection
+                    
+                    // Default Settings Section
+                    defaultSettingsSection
+                    
+                    // Categories Section
+                    categoriesSection
+                    
+                    // Data Management Section
+                    dataManagementSection
+                    
+                    // About Section
+                    aboutSection
+                }
             }
-            .navigationTitle("Settings")
+            .navigationBarHidden(true)
             .sheet(isPresented: $showingImportFilePicker) {
                 documentPicker
             }
@@ -64,6 +70,14 @@ struct SettingsView: View {
             } message: {
                 Text("Your data has been exported successfully.")
             }
+        }
+    }
+
+    private var settingsHeader: some View {
+        HStack {
+            Text(NSLocalizedString("Settings", comment: "Settings title"))
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+            Spacer()
         }
     }
     

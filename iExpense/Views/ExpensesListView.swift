@@ -108,6 +108,10 @@ struct ExpensesListView: View {
                     .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
+                    expensesHeader
+                        .padding(.horizontal)
+                        .padding(.top, 4)
+
                     // Month Year Picker
                     monthYearPicker
                         .padding(.top, 8)
@@ -209,51 +213,7 @@ struct ExpensesListView: View {
                     isSearchActive = !searchText.isEmpty
                 }
             }
-            .navigationTitle("Expenses")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    HStack(spacing: 12) {
-                        // Sort button
-                        Menu {
-                            Picker("Sort by", selection: $selectedSortOption) {
-                                ForEach(SortOption.allCases) { option in
-                                    Text(option.rawValue).tag(option)
-                                }
-                            }
-                        } label: {
-                            Label("Sort", systemImage: "arrow.up.arrow.down")
-                        }
-                        
-                        // Filter button
-                        Button(action: {
-                            showingFilterSheet = true
-                        }) {
-                            Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 12) {
-                        Menu {
-                            Picker(NSLocalizedString("Group", comment: "Group"), selection: $groupingMode) {
-                                ForEach(GroupingMode.allCases) { mode in
-                                    Text(NSLocalizedString(mode.rawValue, comment: "Grouping mode")).tag(mode)
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "line.3.horizontal.decrease.circle")
-                        }
-                        
-                        Button(action: {
-                            let newExpense = Expense(title: "", price: 0, date: Date(), category: .system(.food))
-                            selectedExpenseToEdit = newExpense
-                        }) {
-                            Image(systemName: "plus")
-                        }
-                    }
-                }
-            }
+            .navigationBarHidden(true)
             .refreshable {
                 refreshExpenses()
             }
@@ -335,6 +295,68 @@ struct ExpensesListView: View {
                     }
                 }
             )
+        }
+    }
+
+    private var expensesHeader: some View {
+        HStack(spacing: 12) {
+            Text(NSLocalizedString("Expenses", comment: "Expenses title"))
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+
+            Spacer()
+
+            Menu {
+                Picker("Sort by", selection: $selectedSortOption) {
+                    ForEach(SortOption.allCases) { option in
+                        Text(option.rawValue).tag(option)
+                    }
+                }
+            } label: {
+                Image(systemName: "arrow.up.arrow.down")
+                    .font(.callout)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(Capsule())
+            }
+
+            Button(action: {
+                showingFilterSheet = true
+            }) {
+                Image(systemName: "line.3.horizontal.decrease.circle")
+                    .font(.callout)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(Capsule())
+            }
+
+            Menu {
+                Picker(NSLocalizedString("Group", comment: "Group"), selection: $groupingMode) {
+                    ForEach(GroupingMode.allCases) { mode in
+                        Text(NSLocalizedString(mode.rawValue, comment: "Grouping mode")).tag(mode)
+                    }
+                }
+            } label: {
+                Image(systemName: "line.3.horizontal.3.decrease.circle")
+                    .font(.callout)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(Capsule())
+            }
+
+            Button(action: {
+                let newExpense = Expense(title: "", price: 0, date: Date(), category: .system(.food))
+                selectedExpenseToEdit = newExpense
+            }) {
+                Image(systemName: "plus")
+                    .font(.callout)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(Capsule())
+            }
         }
     }
     

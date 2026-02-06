@@ -18,6 +18,8 @@ struct HomeView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
+                    homeHeader
+                        .padding(.top, 4)
                     MonthYearPicker(
                         selectedMonth: $analyticsViewModel.selectedMonth,
                         selectedYear: $analyticsViewModel.selectedYear,
@@ -27,9 +29,8 @@ struct HomeView: View {
                     )
                     .padding(.top, 8)
 
-                    headerCard
-                        .padding(.top, 10)
                     budgetSummaryCard
+                        .padding(.top, 10)
                     recentSpendingCard
                     categoryBreakdownCard
                     recentExpensesSection
@@ -37,24 +38,7 @@ struct HomeView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 20)
             }
-            .navigationTitle("Home")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        showingQuickAdd = true
-                    }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "plus")
-                            Text("Add")
-                                .font(.callout)
-                                .fontWeight(.semibold)
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .cornerRadius(20)
-                    }
-                }
-            }
+            .navigationBarHidden(true)
             .sheet(isPresented: $showingQuickAdd) {
                 QuickAddExpenseView(viewModel: viewModel, onShowFullForm: {
                     showingAddExpense = true
@@ -74,145 +58,178 @@ struct HomeView: View {
             }
         }
     }
-    
-    // MARK: - Header Card
-    
-    private var headerCard: some View {
-        VStack(spacing: 16) {
-            // Total display
-            VStack(spacing: 4) {
-                Text("Total Spent This Month")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                
-                Text(analyticsViewModel.totalSpent, format: .currency(code: SettingsViewModel.getAppCurrency()))
-                    .font(.system(size: 42, weight: .bold, design: .rounded))
-                    .foregroundColor(.primary)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
-            }
+
+    private var homeHeader: some View {
+        HStack {
+            Text(NSLocalizedString("Home", comment: "Home title"))
+                .font(.system(size: 28, weight: .bold, design: .rounded))
             
-            // Budget information if available
-            if analyticsViewModel.currentBudget > 0 {
-                VStack(spacing: 8) {
-                    // Progress bar
-                    let progress = min(1.0, analyticsViewModel.totalSpent / analyticsViewModel.currentBudget)
-                    let progressColor: Color = progress < 0.75 ? .blue : (progress < 0.9 ? .orange : .red)
-                    
-                    GeometryReader { geometry in
-                        ZStack(alignment: .leading) {
-                            // Background
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color(.systemGray5))
-                                .frame(height: 8)
-                            
-                            // Progress
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(progressColor)
-                                .frame(width: geometry.size.width * CGFloat(progress), height: 8)
-                        }
-                    }
-                    .frame(height: 8)
-                    
-                    // Budget info
-                    HStack {
-                        Text(String(format: NSLocalizedString("%d%% of budget", comment: "Budget progress percentage"), Int(progress * 100)))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        
-                        Spacer()
-                        
-                        Text(String(format: NSLocalizedString("%d days left", comment: "Days remaining in month"), analyticsViewModel.daysRemainingInMonth))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+            Spacer()
+            
+            Button(action: {
+                showingQuickAdd = true
+            }) {
+                HStack(spacing: 6) {
+                    Image(systemName: "plus")
+                    Text(NSLocalizedString("Add", comment: "Add"))
+                        .fontWeight(.semibold)
                 }
+                .font(.callout)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(Capsule())
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.secondarySystemBackground))
-                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-        )
-        .offset(y: animateCards ? 0 : -50)
-        .opacity(animateCards ? 1 : 0)
+        .padding(.horizontal, 4)
     }
     
     // MARK: - Recent Spending Card
 
     private var budgetSummaryCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Budget Summary")
-                .font(.headline)
-            
-            if analyticsViewModel.currentBudget > 0 {
-                let progress = min(1.0, analyticsViewModel.totalSpent / analyticsViewModel.currentBudget)
-                let progressColor: Color = progress < 0.75 ? .blue : (progress < 0.9 ? .orange : .red)
-                let remaining = analyticsViewModel.currentBudget - analyticsViewModel.totalSpent
-                
-                HStack(spacing: 16) {
+        let budget = analyticsViewModel.currentBudget
+        let spent = analyticsViewModel.totalSpent
+        let remaining = budget - spent
+        let progress = budget > 0 ? min(1.0, spent / budget) : 0
+        let daysLeft = analyticsViewModel.daysRemainingInMonth
+        let perDay = daysLeft > 0 ? max(0, remaining) / Double(daysLeft) : 0
+        let progressColor: Color = progress < 0.75 ? .green : (progress < 0.9 ? .orange : .red)
+
+        return VStack(alignment: .leading, spacing: 14) {
+            ZStack {
+                Text(NSLocalizedString("Budget Summary", comment: "Budget summary title"))
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                if budget > 0 && remaining < 0 {
+                    HStack {
+                        Spacer()
+                        Text(NSLocalizedString("Over Budget", comment: "Over budget badge"))
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.red.opacity(0.15))
+                            .foregroundColor(.red)
+                            .clipShape(Capsule())
+                    }
+                }
+            }
+
+            if budget > 0 {
+                VStack(spacing: 10) {
                     ZStack {
                         Circle()
-                            .stroke(Color(.systemGray5), lineWidth: 10)
-                            .frame(width: 64, height: 64)
-                        
+                            .stroke(Color(.systemGray5), lineWidth: 12)
+                            .frame(width: 120, height: 120)
+
                         Circle()
                             .trim(from: 0, to: progress)
-                            .stroke(progressColor, style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                            .frame(width: 64, height: 64)
+                            .stroke(progressColor, style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                            .frame(width: 120, height: 120)
                             .rotationEffect(.degrees(-90))
-                        
-                        Text("\(Int(progress * 100))%")
-                            .font(.caption)
-                            .fontWeight(.bold)
-                            .foregroundColor(progressColor)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(analyticsViewModel.totalSpent, format: .currency(code: SettingsViewModel.getAppCurrency()))
-                            .font(.headline)
-                        
-                        if remaining >= 0 {
-                            Text("Remaining")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Text(remaining, format: .currency(code: SettingsViewModel.getAppCurrency()))
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        } else {
-                            Text("Over Budget")
-                                .font(.caption)
-                                .foregroundColor(.red)
+
+                        VStack(spacing: 2) {
+                            Text(remaining >= 0 ? NSLocalizedString("Remaining", comment: "Budget remaining label") : NSLocalizedString("Over Budget", comment: "Over budget label"))
+                                .font(.caption2)
+                                .foregroundColor(remaining >= 0 ? .secondary : .red)
                             Text(abs(remaining), format: .currency(code: SettingsViewModel.getAppCurrency()))
-                                .font(.caption)
-                                .foregroundColor(.red)
+                                .font(.system(size: 22, weight: .bold))
+                                .foregroundColor(remaining >= 0 ? .primary : .red)
                         }
-                        
-                        Text(String(format: NSLocalizedString("%d days left", comment: "Days remaining in month"), analyticsViewModel.daysRemainingInMonth))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
                     }
-                    
-                    Spacer()
+                    .frame(maxWidth: .infinity)
+
+                    HStack(spacing: 10) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(NSLocalizedString("Spent", comment: "Total spent label"))
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Text(spent, format: .currency(code: SettingsViewModel.getAppCurrency()))
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text(NSLocalizedString("Budget", comment: "Budget label"))
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Text(budget, format: .currency(code: SettingsViewModel.getAppCurrency()))
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+
+                    HStack(spacing: 8) {
+                        if remaining >= 0 {
+                            BudgetPill(
+                                title: NSLocalizedString("Per day", comment: "Per day label"),
+                                value: perDay.formatted(.currency(code: SettingsViewModel.getAppCurrency()))
+                            )
+                        }
+                        BudgetPill(
+                            title: NSLocalizedString("Day left", comment: "Days left label"),
+                            value: "\(daysLeft)"
+                        )
+                        BudgetPill(
+                            title: NSLocalizedString("Used", comment: "Budget used label"),
+                            value: "\(Int(progress * 100))%"
+                        )
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
             } else {
-                HStack(spacing: 8) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundColor(.orange)
-                    Text("Budget not set for this month")
-                        .font(.subheadline)
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.orange)
+                        Text(NSLocalizedString("Budget not set for this month", comment: "Budget not set warning"))
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Text(NSLocalizedString("Spent", comment: "Total spent label"))
+                        .font(.caption2)
                         .foregroundColor(.secondary)
+                    Text(spent, format: .currency(code: SettingsViewModel.getAppCurrency()))
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(.primary)
+
+                    Button(action: {
+                        NotificationCenter.default.post(name: NSNotification.Name("SwitchToAnalyticsTab"), object: nil)
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "plus.circle.fill")
+                            Text(NSLocalizedString("Set Budget", comment: "Set budget action"))
+                        }
+                        .font(.subheadline)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .background(Color.accentColor.opacity(0.12))
+                        .clipShape(Capsule())
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 6)
             }
         }
         .padding()
         .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.secondarySystemBackground))
-                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+            RoundedRectangle(cornerRadius: 22)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(.secondarySystemBackground),
+                            Color(.tertiarySystemBackground)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .shadow(color: Color.black.opacity(0.06), radius: 14, x: 0, y: 6)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(Color.white.opacity(0.06), lineWidth: 1)
         )
         .offset(y: animateCards ? 0 : -10)
         .opacity(animateCards ? 1 : 0)
@@ -552,6 +569,27 @@ struct HomeView: View {
     
     private func categoryIcon(for category: ExpenseCategory) -> String? {
         category.iconName
+    }
+}
+
+private struct BudgetPill: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text(title)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+            Text(value)
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+        }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 10)
+        .background(Color(.tertiarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
 

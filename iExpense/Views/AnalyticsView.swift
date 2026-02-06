@@ -9,6 +9,10 @@ struct AnalyticsView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
+                analyticsHeader
+                    .padding(.horizontal)
+                    .padding(.top, 4)
+
                 // Month Year Picker
                 MonthYearPicker(
                     selectedMonth: $analyticsViewModel.selectedMonth,
@@ -42,12 +46,20 @@ struct AnalyticsView: View {
                 }
                 .scrollDisabled(false)
             }
-            .navigationTitle("Analytics")
+            .navigationBarHidden(true)
             .alert("Budget Saved", isPresented: $showSaveBudgetSuccess) {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text("Your monthly budget has been saved successfully.")
             }
+        }
+    }
+
+    private var analyticsHeader: some View {
+        HStack {
+            Text(NSLocalizedString("Analytics", comment: "Analytics title"))
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+            Spacer()
         }
     }
     

@@ -48,6 +48,17 @@
 "Recent Expenses" = "Gastos recientes";
 "Hide" = "Ocultar";
 "Show" = "Mostrar";
+"Budget Summary" = "Resumen del presupuesto";
+"Set Budget" = "Establecer presupuesto";
+"Budget not set for this month" = "Presupuesto no establecido para este mes";
+"Remaining" = "Restante";
+"Over Budget" = "Fuera de presupuesto";
+"%@ per day" = "%@ por día";
+"Per day" = "Por día";
+"Day left" = "Días restantes";
+"Used" = "Usado";
+"Spent" = "Gastado";
+"Budget" = "Presupuesto";
 "No expenses yet" = "Aún no hay gastos";
 "View All Expenses" = "Ver todos los gastos";
 
