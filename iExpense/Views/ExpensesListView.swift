@@ -13,6 +13,7 @@ struct ExpensesListView: View {
     @State private var showEmptyState: Bool = false
     @State private var selectedCategories: Set<Category> = Set(Category.allCases)
     @State private var isSearchActive = false
+    @State private var groupingMode: GroupingMode = .category
     
     // Animation states
     @State private var isListLoaded = false
@@ -26,6 +27,13 @@ struct ExpensesListView: View {
         case amountAscending = "Lowest Amount"
         case titleAscending = "Title A-Z"
         
+        var id: String { self.rawValue }
+    }
+
+    enum GroupingMode: String, CaseIterable, Identifiable {
+        case category = "By Category"
+        case day = "By Day"
+
         var id: String { self.rawValue }
     }
     
@@ -72,6 +80,14 @@ struct ExpensesListView: View {
         return categories
     }
 
+    private var groupedByDay: [Date: [Expense]] {
+        Dictionary(grouping: filteredExpenses) { Calendar.current.startOfDay(for: $0.date) }
+    }
+
+    private var visibleDays: [Date] {
+        groupedByDay.keys.sorted(by: { $0 > $1 })
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -98,40 +114,68 @@ struct ExpensesListView: View {
                             .animation(.easeInOut, value: filteredExpenses.isEmpty)
                     } else {
                         List {
-                            ForEach(visibleCategories, id: \.self) { category in
-                                Section {
-                                    ForEach(groupedExpenses[category] ?? []) { expense in
-                                        ExpenseRowContent(expense: expense, onEdit: { 
-                                            selectedExpenseToEdit = expense
-                                        }, onDelete: {
-                                            deleteExpenseByID(expense)
-                                        })
-                                    }
-                                } header: {
-                                    HStack {
-                                        // Fixed-width icon container
-                                        ZStack {
-                                            Circle()
-                                                .fill(category.color)
-                                                .frame(width: 28, height: 28)
-                                            
-                                            Image(systemName: categoryIcon(for: category))
-                                                .foregroundColor(.white)
-                                                .font(.caption)
+                            switch groupingMode {
+                            case .category:
+                                ForEach(visibleCategories, id: \.self) { category in
+                                    Section {
+                                        ForEach(groupedExpenses[category] ?? []) { expense in
+                                            ExpenseRowContent(expense: expense, onEdit: {
+                                                selectedExpenseToEdit = expense
+                                            }, onDelete: {
+                                                deleteExpenseByID(expense)
+                                            })
                                         }
-                                        
-                                        Text(category.displayName)
-                                            .font(.headline)
-                                        
-                                        Spacer()
-                                        
-                                        // Total for this category
-                                        let categoryTotal = (groupedExpenses[category] ?? []).reduce(0) { $0 + $1.price }
-                                        Text(categoryTotal, format: .currency(code: SettingsViewModel.getAppCurrency()))
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
+                                    } header: {
+                                        HStack {
+                                            // Fixed-width icon container
+                                            ZStack {
+                                                Circle()
+                                                    .fill(category.color)
+                                                    .frame(width: 28, height: 28)
+                                                
+                                                Image(systemName: categoryIcon(for: category))
+                                                    .foregroundColor(.white)
+                                                    .font(.caption)
+                                            }
+                                            
+                                            Text(category.displayName)
+                                                .font(.headline)
+                                            
+                                            Spacer()
+                                            
+                                            // Total for this category
+                                            let categoryTotal = (groupedExpenses[category] ?? []).reduce(0) { $0 + $1.price }
+                                            Text(categoryTotal, format: .currency(code: SettingsViewModel.getAppCurrency()))
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        .padding(.vertical, 6)
                                     }
-                                    .padding(.vertical, 6)
+                                }
+                            case .day:
+                                ForEach(visibleDays, id: \.self) { day in
+                                    Section {
+                                        ForEach(groupedByDay[day] ?? []) { expense in
+                                            ExpenseRowContent(expense: expense, onEdit: {
+                                                selectedExpenseToEdit = expense
+                                            }, onDelete: {
+                                                deleteExpenseByID(expense)
+                                            })
+                                        }
+                                    } header: {
+                                        HStack {
+                                            Text(day, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
+                                                .font(.headline)
+                                            
+                                            Spacer()
+                                            
+                                            let dayTotal = (groupedByDay[day] ?? []).reduce(0) { $0 + $1.price }
+                                            Text(dayTotal, format: .currency(code: SettingsViewModel.getAppCurrency()))
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        .padding(.vertical, 6)
+                                    }
                                 }
                             }
                         }
@@ -172,11 +216,23 @@ struct ExpensesListView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        let newExpense = Expense(title: "", price: 0, date: Date(), category: .food)
-                        selectedExpenseToEdit = newExpense
-                    }) {
-                        Image(systemName: "plus")
+                    HStack(spacing: 12) {
+                        Menu {
+                            Picker(NSLocalizedString("Group", comment: "Group"), selection: $groupingMode) {
+                                ForEach(GroupingMode.allCases) { mode in
+                                    Text(NSLocalizedString(mode.rawValue, comment: "Grouping mode")).tag(mode)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "line.3.horizontal.decrease.circle")
+                        }
+                        
+                        Button(action: {
+                            let newExpense = Expense(title: "", price: 0, date: Date(), category: .food)
+                            selectedExpenseToEdit = newExpense
+                        }) {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
