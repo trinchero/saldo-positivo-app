@@ -111,10 +111,6 @@ struct ExpensesListView: View {
                     expensesHeader
                         .padding(.horizontal)
                         .padding(.top, 4)
-
-                    // Month Year Picker
-                    monthYearPicker
-                        .padding(.top, 8)
                     
                     // Summary Card
                     if !filteredExpenses.isEmpty {
@@ -299,37 +295,44 @@ struct ExpensesListView: View {
     }
 
     private var expensesHeader: some View {
-        HStack(spacing: 12) {
-            Text(NSLocalizedString("Expenses", comment: "Expenses title"))
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-
-            Spacer()
-
-            Menu {
-                Picker("Sort by", selection: $selectedSortOption) {
-                    ForEach(SortOption.allCases) { option in
-                        Text(option.rawValue).tag(option)
-                    }
+        ZStack {
+            InlineMonthYearPicker(
+                selectedMonth: $analyticsViewModel.selectedMonth,
+                selectedYear: $analyticsViewModel.selectedYear,
+                monthsToShow: monthHistoryLength,
+                onMonthYearChanged: {
+                    analyticsViewModel.calculateAnalytics()
                 }
-            } label: {
-                Image(systemName: "arrow.up.arrow.down")
-                    .font(.callout)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(Capsule())
-            }
+            )
 
-            Button(action: {
-                showingFilterSheet = true
-            }) {
-                Image(systemName: "line.3.horizontal.decrease.circle")
-                    .font(.callout)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(Capsule())
-            }
+            HStack(spacing: 12) {
+                Menu {
+                    Picker("Sort by", selection: $selectedSortOption) {
+                        ForEach(SortOption.allCases) { option in
+                            Text(option.rawValue).tag(option)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.callout)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(Capsule())
+                }
+
+                Button(action: {
+                    showingFilterSheet = true
+                }) {
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                        .font(.callout)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(Capsule())
+                }
+
+                Spacer()
 
             Menu {
                 Picker(NSLocalizedString("Group", comment: "Group"), selection: $groupingMode) {
@@ -338,7 +341,7 @@ struct ExpensesListView: View {
                     }
                 }
             } label: {
-                Image(systemName: "line.3.horizontal.3.decrease.circle")
+                Image(systemName: "square.grid.2x2")
                     .font(.callout)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)
@@ -346,34 +349,21 @@ struct ExpensesListView: View {
                     .clipShape(Capsule())
             }
 
-            Button(action: {
-                let newExpense = Expense(title: "", price: 0, date: Date(), category: .system(.food))
-                selectedExpenseToEdit = newExpense
-            }) {
-                Image(systemName: "plus")
-                    .font(.callout)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(Capsule())
+                Button(action: {
+                    let newExpense = Expense(title: "", price: 0, date: Date(), category: .system(.food))
+                    selectedExpenseToEdit = newExpense
+                }) {
+                    Image(systemName: "plus")
+                        .font(.callout)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(Capsule())
+                }
             }
         }
+        .frame(height: 72)
     }
-    
-    // MARK: - Month-Year Picker
-    
-    private var monthYearPicker: some View {
-        MonthYearPicker(
-            selectedMonth: $analyticsViewModel.selectedMonth,
-            selectedYear: $analyticsViewModel.selectedYear,
-            monthsToShow: monthHistoryLength,
-            onMonthYearChanged: {
-                analyticsViewModel.calculateAnalytics()
-            }
-        )
-        .padding(.horizontal)
-    }
-
 
     
     // MARK: - Summary Card

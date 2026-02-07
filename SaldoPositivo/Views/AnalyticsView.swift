@@ -13,17 +13,6 @@ struct AnalyticsView: View {
                     .padding(.horizontal)
                     .padding(.top, 4)
 
-                // Month Year Picker
-                MonthYearPicker(
-                    selectedMonth: $analyticsViewModel.selectedMonth,
-                    selectedYear: $analyticsViewModel.selectedYear,
-                    onMonthYearChanged: {
-                        analyticsViewModel.calculateAnalytics()
-                    }
-                )
-                .padding(.horizontal)
-                .padding(.bottom, 8)
-                
                 // Tab Selection
                 AnalyticsTabSelector(selectedTab: $selectedTab)
                     .padding(.horizontal)
@@ -59,11 +48,20 @@ struct AnalyticsView: View {
     }
 
     private var analyticsHeader: some View {
-        HStack {
-            Text(NSLocalizedString("Analytics", comment: "Analytics title"))
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-            Spacer()
+        ZStack {
+            InlineMonthYearPicker(
+                selectedMonth: $analyticsViewModel.selectedMonth,
+                selectedYear: $analyticsViewModel.selectedYear,
+                monthsToShow: 36,
+                onMonthYearChanged: {
+                    analyticsViewModel.calculateAnalytics()
+                }
+            )
+            HStack {
+                Spacer()
+            }
         }
+        .frame(height: 72)
     }
     
     // MARK: - Overview Tab Content

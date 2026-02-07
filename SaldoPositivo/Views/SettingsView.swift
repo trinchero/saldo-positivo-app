@@ -15,33 +15,27 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                settingsHeader
-                    .padding(.horizontal)
-                    .padding(.top, 4)
+            Form {
+                // Appearance Section
+                appearanceSection
 
-                Form {
-                    // Appearance Section
-                    appearanceSection
-
-                    // Language Section
-                    languageSection
-                    
-                    // Currency Section
-                    currencySection
-                    
-                    // Default Settings Section
-                    defaultSettingsSection
-                    
-                    // Categories Section
-                    categoriesSection
-                    
-                    // Data Management Section
-                    dataManagementSection
-                    
-                    // About Section
-                    aboutSection
-                }
+                // Language Section
+                languageSection
+                
+                // Currency Section
+                currencySection
+                
+                // Default Settings Section
+                defaultSettingsSection
+                
+                // Categories Section
+                categoriesSection
+                
+                // Data Management Section
+                dataManagementSection
+                
+                // About Section
+                aboutSection
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showingImportFilePicker) {
@@ -70,14 +64,6 @@ struct SettingsView: View {
             } message: {
                 Text("Your data has been exported successfully.")
             }
-        }
-    }
-
-    private var settingsHeader: some View {
-        HStack {
-            Text(NSLocalizedString("Settings", comment: "Settings title"))
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-            Spacer()
         }
     }
     

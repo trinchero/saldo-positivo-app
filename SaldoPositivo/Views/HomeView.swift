@@ -4,6 +4,7 @@ import Charts
 struct HomeView: View {
     @ObservedObject var viewModel: ExpenseViewModel
     @ObservedObject var analyticsViewModel: AnalyticsViewModel
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showingAddExpense = false
     @State private var showingQuickAdd = false
     @State private var showRecentExpenses = false
@@ -22,15 +23,6 @@ struct HomeView: View {
                 VStack(spacing: 20) {
                     homeHeader
                         .padding(.top, 4)
-                    MonthYearPicker(
-                        selectedMonth: $analyticsViewModel.selectedMonth,
-                        selectedYear: $analyticsViewModel.selectedYear,
-                        onMonthYearChanged: {
-                            analyticsViewModel.calculateAnalytics()
-                        }
-                    )
-                    .padding(.top, 8)
-
                     budgetSummaryCard
                         .padding(.top, 10)
                     recentSpendingCard
@@ -75,27 +67,47 @@ struct HomeView: View {
     }
 
     private var homeHeader: some View {
-        HStack {
-            Text(NSLocalizedString("Home", comment: "Home title"))
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-            
-            Spacer()
-            
-            Button(action: {
-                showingQuickAdd = true
-            }) {
-                HStack(spacing: 6) {
-                    Image(systemName: "plus")
-                    Text(NSLocalizedString("Add", comment: "Add"))
-                        .fontWeight(.semibold)
+        ZStack {
+            InlineMonthYearPicker(
+                selectedMonth: $analyticsViewModel.selectedMonth,
+                selectedYear: $analyticsViewModel.selectedYear,
+                monthsToShow: 36,
+                onMonthYearChanged: {
+                    analyticsViewModel.calculateAnalytics()
                 }
-                .font(.callout)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(Capsule())
+            )
+            
+            HStack {
+                Image("SaldoLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
+                    .padding(6)
+                    .colorMultiply(colorScheme == .light ? Color.green : Color.white)
+                    .background(
+                        Circle()
+                            .fill(Color(.secondarySystemBackground))
+                    )
+                
+                Spacer()
+                
+                Button(action: {
+                    showingQuickAdd = true
+                }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "plus")
+                        Text(NSLocalizedString("Add", comment: "Add"))
+                            .fontWeight(.semibold)
+                    }
+                    .font(.callout)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(Capsule())
+                }
             }
         }
+        .frame(height: 76)
         .padding(.horizontal, 4)
     }
     
