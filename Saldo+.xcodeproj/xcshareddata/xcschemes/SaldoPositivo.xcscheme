@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "714E82F22DBE3124005ED7BB"
-               BuildableName = "Inpenso.app"
-               BlueprintName = "Inpenso"
+               BuildableName = "SaldoPositivo.app"
+               BlueprintName = "SaldoPositivo"
                ReferencedContainer = "container:Saldo+.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "714E82F22DBE3124005ED7BB"
-            BuildableName = "Inpenso.app"
-            BlueprintName = "Inpenso"
+            BuildableName = "SaldoPositivo.app"
+            BlueprintName = "SaldoPositivo"
             ReferencedContainer = "container:Saldo+.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "714E82F22DBE3124005ED7BB"
-            BuildableName = "Inpenso.app"
-            BlueprintName = "Inpenso"
+            BuildableName = "SaldoPositivo.app"
+            BlueprintName = "SaldoPositivo"
             ReferencedContainer = "container:Saldo+.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

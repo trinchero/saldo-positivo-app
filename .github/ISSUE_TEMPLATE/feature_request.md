@@ -1,22 +1,16 @@
 ---
 name: Feature request
-about: Suggest an idea for Inpenso
-title: '[FEATURE] '
-labels: enhancement
-assignees: ''
+about: Suggest an idea for Saldo+
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**Describe the feature**
+A clear and concise description of the feature you want.
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**Problem it solves**
+Explain the problem this feature would solve for users.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**How would this feature benefit most Inpenso users?**
-Explain why this would be valuable to implement for the broader user base.
+**Proposed solution**
+Describe how you think this should work.
 
 **Additional context**
-Add any other context or screenshots about the feature request here. 
+Add any other context or screenshots about the feature here.

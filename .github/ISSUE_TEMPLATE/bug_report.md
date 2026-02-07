@@ -1,9 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve Inpenso
-title: '[BUG] '
-labels: bug
-assignees: ''
+about: Create a report to help us improve Saldo+
 ---
 
 **Describe the bug**
@@ -22,10 +19,9 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Device Information (please complete the following information):**
- - Device: [e.g. iPhone 14 Pro]
- - OS: [e.g. iOS 16.5]
- - App Version: [e.g. 1.0.1]
+**Device**
+- iPhone model:
+- iOS version:
 
 **Additional context**
-Add any other context about the problem here. 
+Add any other context about the problem here.

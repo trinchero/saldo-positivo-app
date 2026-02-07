@@ -20,12 +20,12 @@
             landmarkType = "24">
             <Locations>
                <Location
-                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - 8a3863c8297f4cdf"
+                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - 8b7d642abdacc5e3"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Inpenso.TestButton.body.getter : some"
-                  moduleName = "Inpenso.debug.dylib"
+                  symbolName = "SaldoPositivo.TestButton.body.getter : some"
+                  moduleName = "SaldoPositivo.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/andrea/Repository/Saldo+/SaldoPositivo/ViewTests/TestButton.swift"
                   startingColumnNumber = "9223372036854775807"
@@ -34,12 +34,12 @@
                   endingLineNumber = "11">
                </Location>
                <Location
-                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - b7f0d17439b741b8"
+                  uuid = "818048CC-ECF2-4CDD-BCCB-853F4C9E0951 - cd5c583b9363f18c"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #3 @Swift.MainActor () -&gt; () in Inpenso.TestButton.body.getter : some"
-                  moduleName = "Inpenso.debug.dylib"
+                  symbolName = "closure #3 @Swift.MainActor () -&gt; () in SaldoPositivo.TestButton.body.getter : some"
+                  moduleName = "SaldoPositivo.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/andrea/Repository/Saldo+/SaldoPositivo/ViewTests/TestButton.swift"
                   startingColumnNumber = "9223372036854775807"

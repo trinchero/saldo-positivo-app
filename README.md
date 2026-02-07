@@ -1,21 +1,21 @@
-# Inpenso
+# Saldo+
 
 <p align="center">
   <kbd>
-    <img src=".github/assets/inpenso-logo.png" alt="Inpenso Logo" width="150" height="150"/>
+    <img src=".github/assets/inpenso-logo.png" alt="Saldo+ Logo" width="150" height="150"/>
   </kbd>
 </p>
 
-A modern, intuitive expense tracker for iOS that helps you monitor spending, set budgets, and visualize your financial habits through beautiful analytics.
+Saldo+ is a modern, intuitive expense tracker for iOS that helps you monitor spending, set budgets, and visualize your financial habits through clean, premium analytics.
 
 ## Features
 
-- 📊 **Smart Analytics**: Visualize your spending patterns by category, month, and trends
-- 💰 **Budget Management**: Set monthly budgets and track your progress
-- 🔔 **Home Screen Widgets**: Monitor your expenses directly from your home screen
-- 📱 **iOS Integration**: Clean SwiftUI design that follows Apple's HIG
-- 🔄 **Siri Shortcuts**: Add expenses quickly with voice commands
-- 🔒 **Privacy-Focused**: All your data stays on your device
+- 📊 **Smart Analytics**: Visualize spending by category, month, and trends
+- 💰 **Budget Management**: Set monthly budgets and track progress
+- 🔔 **Home Screen Widgets**: Monitor expenses from the home screen
+- 📱 **iOS‑Native UX**: SwiftUI design aligned with Apple’s HIG
+- 🔄 **Quick Add**: Add expenses fast from the app or widget
+- 🔒 **Privacy‑First**: Data stays on device
 
 ## Screenshots
 
@@ -29,58 +29,51 @@ A modern, intuitive expense tracker for iOS that helps you monitor spending, set
 
 ## Requirements
 
-- iOS 16.0+
-- Xcode 15.0+
+- iOS 18.0+
+- Xcode 16.0+
 - Swift 5.9+
 
 ## Installation
 
-1. Clone the repository:
-```bash
-git clone https://github.com/VintusS/Inpenso.git
-```
-
-2. Open `Inpenso.xcodeproj` in Xcode.
-
-3. Build and run the app on your iOS device or simulator.
+1. Clone the repository.
+2. Open `Saldo+.xcodeproj` in Xcode.
+3. Build and run on a device or simulator.
 
 ## Architecture
 
-Inpenso follows the MVVM (Model-View-ViewModel) architecture pattern:
+Saldo+ follows MVVM:
 
-- **Models**: Data structures representing expenses, categories, and budgets
-- **Views**: SwiftUI views for user interface
-- **ViewModels**: Business logic that connects models to views
-- **Services**: Handles data persistence and shared functionalities
+- **Models**: Expenses, categories, budgets
+- **Views**: SwiftUI UI layer
+- **ViewModels**: Business logic and state
+- **Services**: Local persistence, data utilities
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute, please follow these steps:
+Contributions are welcome:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit changes.
+4. Push to your branch.
+5. Open a Pull Request.
 
-Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+See `CONTRIBUTING.md` for details.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Thanks to all contributors who have helped shape Inpenso
-- Icons provided by SF Symbols
-- Inspiration from other personal finance apps
+MIT License. See `LICENSE`.
 
 ## Contact
 
-Dragomir Mindrescu - [@VintusS](https://github.com/VintusS)
+Andrea Trinchero
+- Email: andrea_trinchero@icloud.com
+- Website: www.trincheroandrea.com
 
-Project Link: [https://github.com/VintusS/Inpenso](https://github.com/VintusS/Inpenso)
+## Project Link
+
+github.com:trinchero/saldo-positivo-app
 
 ## Topics
 
-ios swift swiftui expense-tracker personal-finance budget-app analytics data-visualization mobile-app productivity tools 
+ios swift swiftui expense-tracker personal-finance budget-app analytics data-visualization mobile-app productivity tools

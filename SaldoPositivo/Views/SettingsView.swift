@@ -190,6 +190,7 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section(header: Text("About")) {
             versionRow
+            authorRow
             websiteRow
         }
     }
@@ -207,6 +208,17 @@ struct SettingsView: View {
         Link(destination: URL(string: "https://www.saldopositivo.net")!) {
             HStack {
                 Text("Website")
+                Spacer()
+                Image(systemName: "arrow.up.right.square")
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+
+    private var authorRow: some View {
+        Link(destination: URL(string: "https://www.trincheroandrea.com")!) {
+            HStack {
+                Text("Author")
                 Spacer()
                 Image(systemName: "arrow.up.right.square")
                     .foregroundColor(.secondary)
