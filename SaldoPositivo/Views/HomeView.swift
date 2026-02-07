@@ -22,14 +22,18 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     homeHeader
+                        .padding(.horizontal)
                         .padding(.top, 4)
-                    budgetSummaryCard
-                        .padding(.top, 10)
-                    recentSpendingCard
-                    categoryBreakdownCard
-                    recentExpensesSection
+
+                    VStack(spacing: 20) {
+                        budgetSummaryCard
+                            .padding(.top, 10)
+                        recentSpendingCard
+                        categoryBreakdownCard
+                        recentExpensesSection
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
                 .padding(.bottom, 20)
             }
             .navigationBarHidden(true)
@@ -83,6 +87,7 @@ struct HomeView: View {
                     .scaledToFit()
                     .frame(width: 84, height: 84)
                     .colorMultiply(colorScheme == .light ? Color.green : Color.white)
+                    .padding(.leading, -20)
                 
                 Spacer()
                 
@@ -90,7 +95,6 @@ struct HomeView: View {
                     showingQuickAdd = true
                 }) {
                     HStack(spacing: 6) {
-                        Image(systemName: "plus")
                         Text(NSLocalizedString("Add", comment: "Add"))
                             .fontWeight(.semibold)
                     }

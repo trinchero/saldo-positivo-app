@@ -18,27 +18,32 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationView {
-            Form {
-                // Appearance Section
-                appearanceSection
+            VStack(spacing: 0) {
+                settingsHeader
+                    .padding(.top, 4)
 
-                // Language Section
-                languageSection
-                
-                // Currency Section
-                currencySection
-                
-                // Default Settings Section
-                defaultSettingsSection
-                
-                // Categories Section
-                categoriesSection
-                
-                // Data Management Section
-                dataManagementSection
-                
-                // About Section
-                aboutSection
+                Form {
+                    // Appearance Section
+                    appearanceSection
+
+                    // Language Section
+                    languageSection
+                    
+                    // Currency Section
+                    currencySection
+                    
+                    // Default Settings Section
+                    defaultSettingsSection
+                    
+                    // Categories Section
+                    categoriesSection
+                    
+                    // Data Management Section
+                    dataManagementSection
+                    
+                    // About Section
+                    aboutSection
+                }
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showingImportFilePicker) {
@@ -81,7 +86,24 @@ struct SettingsView: View {
             }
         }
     }
-    
+
+    private var settingsHeader: some View {
+        HStack {
+            Spacer()
+
+            NavigationLink(destination: ProfileView()) {
+                Image(systemName: "person.fill")
+                    .font(.callout)
+                    .foregroundColor(.primary)
+                    .frame(width: 40, height: 40)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(Circle())
+            }
+            .padding(.trailing, 16)
+        }
+        .frame(height: 88)
+    }
+
     // MARK: - UI Components
     
     private var appearanceSection: some View {
