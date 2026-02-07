@@ -63,14 +63,6 @@ struct QuickAddExpenseView: View {
                                 .focused($isAmountFocused)
                             }
 
-                            CardView(title: NSLocalizedString("Category", comment: "Category")) {
-                                CategoryGrid(
-                                    categories: allCategories,
-                                    selectedCategory: $selectedCategory
-                                )
-                                    .padding(.horizontal)
-                            }
-                        } else {
                             CardView(title: NSLocalizedString("Title", comment: "Title")) {
                                 TextFormField(
                                     label: NSLocalizedString("Title", comment: "Title"),
@@ -81,6 +73,14 @@ struct QuickAddExpenseView: View {
                                 .padding(.horizontal)
                             }
 
+                            CardView(title: NSLocalizedString("Category", comment: "Category")) {
+                                CategoryGrid(
+                                    categories: allCategories,
+                                    selectedCategory: $selectedCategory
+                                )
+                                    .padding(.horizontal)
+                            }
+                        } else {
                             dateSection
 
                             notesSection
@@ -145,12 +145,12 @@ struct QuickAddExpenseView: View {
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(step == .amountCategory
-                 ? NSLocalizedString("Amount & Category", comment: "Amount & category step title")
+                 ? NSLocalizedString("Amount, title & category", comment: "Amount, title & category step title")
                  : NSLocalizedString("Details", comment: "Details step title"))
                 .font(.headline)
             Text(step == .amountCategory
-                 ? NSLocalizedString("Enter amount and choose a category.", comment: "Step 1 subtitle")
-                 : NSLocalizedString("Add title, date, and optional notes.", comment: "Step 2 subtitle"))
+                 ? NSLocalizedString("Enter amount, title, and choose a category.", comment: "Step 1 subtitle")
+                 : NSLocalizedString("Add date and optional notes.", comment: "Step 2 subtitle"))
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             Text(step == .amountCategory
@@ -253,6 +253,7 @@ struct QuickAddExpenseView: View {
     private var canProceedToDetails: Bool {
         let normalizedPrice = price.replacingOccurrences(of: ",", with: ".")
         if normalizedPrice.isEmpty { return false }
+        if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return false }
         return Double(normalizedPrice) != nil
     }
 
@@ -266,6 +267,12 @@ struct QuickAddExpenseView: View {
         }
         guard Double(normalizedPrice) != nil else {
             validationMessage = NSLocalizedString("Please enter a valid amount.", comment: "Validation")
+            showValidationToast()
+            HapticFeedback.error()
+            return
+        }
+        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            validationMessage = NSLocalizedString("Please enter a title.", comment: "Validation")
             showValidationToast()
             HapticFeedback.error()
             return

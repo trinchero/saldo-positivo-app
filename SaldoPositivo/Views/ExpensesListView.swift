@@ -9,6 +9,8 @@ struct ExpensesListView: View {
     @State private var showUndoSnackbar: Bool = false
     @State private var undoTimer: Timer? = nil
     @State private var selectedExpenseToEdit: Expense? = nil
+    @State private var showingQuickAdd = false
+    @State private var showingAddExpense = false
     @State private var showingFilterSheet: Bool = false
     @State private var selectedSortOption: SortOption = .dateDescending
     @State private var searchText: String = ""
@@ -245,15 +247,18 @@ struct ExpensesListView: View {
             .onChange(of: viewModel.expenses) {
                 analyticsViewModel.updateExpenses(viewModel.expenses)
             }
+            .sheet(isPresented: $showingQuickAdd) {
+                QuickAddExpenseView(viewModel: viewModel, onShowFullForm: {
+                    showingAddExpense = true
+                })
+            }
+            .sheet(isPresented: $showingAddExpense) {
+                AddExpenseView(viewModel: viewModel)
+            }
             .sheet(item: $selectedExpenseToEdit) { expenseToEdit in
-                if expenseToEdit.title.isEmpty {
-                    // This is a new expense
-                    AddExpenseView(viewModel: viewModel)
-                } else {
-                    // Use ID parameter to force view refresh
-                    EditExpenseView(viewModel: viewModel, expense: expenseToEdit)
-                        .id(expenseToEdit.id) // Force view to refresh completely on each presentation
-                }
+                // Use ID parameter to force view refresh
+                EditExpenseView(viewModel: viewModel, expense: expenseToEdit)
+                    .id(expenseToEdit.id) // Force view to refresh completely on each presentation
             }
             .sheet(isPresented: $showingFilterSheet) {
                 FilterCategoriesView(selectedCategories: $selectedCategories)
@@ -350,15 +355,17 @@ struct ExpensesListView: View {
             }
 
                 Button(action: {
-                    let newExpense = Expense(title: "", price: 0, date: Date(), category: .system(.food))
-                    selectedExpenseToEdit = newExpense
+                    showingQuickAdd = true
                 }) {
-                    Image(systemName: "plus")
-                        .font(.callout)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 8)
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(Capsule())
+                    HStack(spacing: 6) {
+                        Text(NSLocalizedString("Add", comment: "Add"))
+                            .fontWeight(.semibold)
+                    }
+                    .font(.callout)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(Capsule())
                 }
             }
         }
@@ -495,8 +502,7 @@ struct ExpensesListView: View {
                     .padding(.horizontal, 40)
                 
                 Button(action: {
-                    let newExpense = Expense(title: "", price: 0, date: Date(), category: .system(.food))
-                    selectedExpenseToEdit = newExpense
+                    showingQuickAdd = true
                 }) {
                     let addExpenseLabel: some View =
                         Label("Add Expense", systemImage: "plus")

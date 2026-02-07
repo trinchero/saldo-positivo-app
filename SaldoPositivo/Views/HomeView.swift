@@ -16,13 +16,14 @@ struct HomeView: View {
     @State private var overBudgetPulse = false
     
     private let recentDaysToShow = 7
+    private let headerHorizontalInset: CGFloat = 16
+    private let headerHeight: CGFloat = 88
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
                     homeHeader
-                        .padding(.horizontal)
                         .padding(.top, 4)
 
                     VStack(spacing: 20) {
@@ -87,7 +88,6 @@ struct HomeView: View {
                     .scaledToFit()
                     .frame(width: 84, height: 84)
                     .colorMultiply(colorScheme == .light ? Color.green : Color.white)
-                    .padding(.leading, -20)
                 
                 Spacer()
                 
@@ -105,9 +105,9 @@ struct HomeView: View {
                     .clipShape(Capsule())
                 }
             }
+            .padding(.horizontal, headerHorizontalInset)
         }
-        .frame(height: 76)
-        .padding(.horizontal, 4)
+        .frame(height: headerHeight)
     }
     
     // MARK: - Recent Spending Card
@@ -120,6 +120,7 @@ struct HomeView: View {
         let daysLeft = analyticsViewModel.daysRemainingInMonth
         let perDay = daysLeft > 0 ? max(0, remaining) / Double(daysLeft) : 0
         let progressColor: Color = progress < 0.75 ? .green : (progress < 0.9 ? .orange : .red)
+        let usedPillStyle: BudgetPill.Style = progress < 0.7 ? .good : (progress < 0.9 ? .warning : .danger)
 
         return VStack(alignment: .leading, spacing: 14) {
             ZStack {
@@ -200,16 +201,19 @@ struct HomeView: View {
                         if remaining >= 0 {
                             BudgetPill(
                                 title: NSLocalizedString("Per day", comment: "Per day label"),
-                                value: perDay.formatted(.currency(code: SettingsViewModel.getAppCurrency()))
+                                value: perDay.formatted(.currency(code: SettingsViewModel.getAppCurrency())),
+                                style: .accent
                             )
                         }
                         BudgetPill(
                             title: NSLocalizedString("Day left", comment: "Days left label"),
-                            value: "\(daysLeft)"
+                            value: "\(daysLeft)",
+                            style: .neutral
                         )
                         BudgetPill(
                             title: NSLocalizedString("Used", comment: "Budget used label"),
-                            value: "\(Int(ringProgress * 100))%"
+                            value: "\(Int(ringProgress * 100))%",
+                            style: usedPillStyle
                         )
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -617,8 +621,47 @@ struct HomeView: View {
 }
 
 private struct BudgetPill: View {
+    enum Style {
+        case accent
+        case neutral
+        case good
+        case warning
+        case danger
+    }
+
     let title: String
     let value: String
+    var style: Style = .neutral
+
+    private var backgroundColor: Color {
+        switch style {
+        case .accent:
+            return Color.accentColor.opacity(0.16)
+        case .neutral:
+            return Color(.tertiarySystemBackground)
+        case .good:
+            return Color.green.opacity(0.16)
+        case .warning:
+            return Color.orange.opacity(0.16)
+        case .danger:
+            return Color.red.opacity(0.16)
+        }
+    }
+
+    private var valueColor: Color {
+        switch style {
+        case .accent:
+            return .accentColor
+        case .neutral:
+            return .primary
+        case .good:
+            return .green
+        case .warning:
+            return .orange
+        case .danger:
+            return .red
+        }
+    }
 
     var body: some View {
         VStack(spacing: 4) {
@@ -628,11 +671,11 @@ private struct BudgetPill: View {
             Text(value)
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundColor(.primary)
+                .foregroundColor(valueColor)
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 10)
-        .background(Color(.tertiarySystemBackground))
+        .background(backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
