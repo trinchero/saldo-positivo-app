@@ -112,7 +112,7 @@ struct CategoriesSettingsView: View {
                         Section(header: Text(NSLocalizedString("Category Details", comment: "Category details"))) {
                             TextField(NSLocalizedString("Name", comment: "Name"), text: $editorName)
                             TextField(NSLocalizedString("Emoji", comment: "Emoji"), text: $editorEmoji)
-                                .onChange(of: editorEmoji) { newValue in
+                                .onChange(of: editorEmoji) { _, newValue in
                                     editorEmoji = normalizedEmoji(newValue)
                                 }
                         }

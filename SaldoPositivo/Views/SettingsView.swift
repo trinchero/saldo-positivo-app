@@ -12,6 +12,9 @@ struct SettingsView: View {
     @State private var showingImportSuccess = false
     @State private var showingImportFailure = false
     @State private var showingExportSuccess = false
+    @State private var versionTapCount = 0
+    @State private var showAuthorPopup = false
+    @State private var showAuthorLink = false
     
     var body: some View {
         NavigationView {
@@ -63,6 +66,18 @@ struct SettingsView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text("Your data has been exported successfully.")
+            }
+            .alert("Author", isPresented: $showAuthorPopup) {
+                Button("Cancel", role: .cancel) { }
+                Button("Open") { showAuthorLink = true }
+            } message: {
+                Text("Open the author website?")
+            }
+        }
+        .onChange(of: showAuthorLink) { _, newValue in
+            if newValue, let url = URL(string: "https://www.trincheroandrea.com") {
+                UIApplication.shared.open(url)
+                showAuthorLink = false
             }
         }
     }
@@ -190,18 +205,27 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section(header: Text("About")) {
             versionRow
-            authorRow
             websiteRow
+            copyrightRow
         }
     }
     
     private var versionRow: some View {
-        HStack {
-            Text("Version")
-            Spacer()
-            Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
-                .foregroundColor(.secondary)
+        Button(action: {
+            versionTapCount += 1
+            if versionTapCount >= 10 {
+                versionTapCount = 0
+                showAuthorPopup = true
+            }
+        }) {
+            HStack {
+                Text("Version")
+                Spacer()
+                Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
+                    .foregroundColor(.secondary)
+            }
         }
+        .buttonStyle(.plain)
     }
 
     private var websiteRow: some View {
@@ -215,14 +239,15 @@ struct SettingsView: View {
         }
     }
 
-    private var authorRow: some View {
-        Link(destination: URL(string: "https://www.trincheroandrea.com")!) {
-            HStack {
-                Text("Author")
-                Spacer()
-                Image(systemName: "arrow.up.right.square")
-                    .foregroundColor(.secondary)
-            }
+    private var copyrightRow: some View {
+        let year = Calendar.current.component(.year, from: Date())
+        let yearText = String(format: "%d", year)
+        return HStack {
+            Spacer()
+            Text("© \(yearText) SaldoPositivo · All rights reserved")
+                .font(.footnote)
+                .foregroundColor(.secondary)
+            Spacer()
         }
     }
     
