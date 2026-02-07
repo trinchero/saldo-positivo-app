@@ -30,10 +30,11 @@ struct LoginView: View {
                     Text("All in one trustable place.")
                 }
                 .font(.subheadline.weight(.medium))
+                //.italic()
                 .foregroundStyle(Color.white.opacity(0.8))
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 0)
-                .padding(.bottom, 30)
+                .padding(.bottom, 14)
 
                 VStack(spacing: 24) {
                     underlineField(
@@ -105,7 +106,7 @@ struct LoginView: View {
 
                 Spacer()
 
-                Text("By continuing, you agree to the Terms of Use and Privacy Policy.")
+                Text("By continuing you agree to \nthe Terms of Use and Privacy Policy")
                     .font(.footnote)
                     .foregroundStyle(Color.white.opacity(0.55))
                     .multilineTextAlignment(.center)
