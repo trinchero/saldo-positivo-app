@@ -30,7 +30,7 @@ struct MainTabView: View {
 
                 SettingsView()
                     .tabItem {
-                        Label("Settings", systemImage: "gearshape.fill")
+                        Label("Account", systemImage: "gearshape.fill")
                     }
                     .tag(3)
             }
