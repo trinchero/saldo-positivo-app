@@ -81,7 +81,7 @@ struct HomeView: View {
                 Image("SaldoLogo")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 60, height: 60)
+                    .frame(width: 84, height: 84)
                     .colorMultiply(colorScheme == .light ? Color.green : Color.white)
                 
                 Spacer()
