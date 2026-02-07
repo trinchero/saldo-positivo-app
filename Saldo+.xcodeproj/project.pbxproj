@@ -20,7 +20,7 @@
 			containerPortal = 714E82EB2DBE3124005ED7BB /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 714E83162DBE3597005ED7BB;
-			remoteInfo = iExpenseWidgetExtensionExtension;
+			remoteInfo = SaldoPositivoWidgetExtensionExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -43,55 +43,37 @@
 		714E83172DBE3597005ED7BB /* InpensoWidgetExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = InpensoWidgetExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		714E83192DBE3597005ED7BB /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		714E831B2DBE3598005ED7BB /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		714E833D2DBE39CE005ED7BB /* iExpenseWidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iExpenseWidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
+		714E833D2DBE39CE005ED7BB /* SaldoPositivoWidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaldoPositivoWidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
 		714E834C2DBE654D005ED7BB /* ProjectPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectPlan.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		714E832E2DBE3599005ED7BB /* Exceptions for "iExpenseWidgetExtension" folder in "InpensoWidgetExtensionExtension" target */ = {
+		71A111112EAAAAAA00000001 /* Exceptions for "SaldoPositivoWidgetExtension" folder in "InpensoWidgetExtensionExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = 714E83162DBE3597005ED7BB /* InpensoWidgetExtensionExtension */;
 		};
-		714E83342DBE3694005ED7BB /* Exceptions for "iExpense" folder in "InpensoWidgetExtensionExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Components/IconUtils.swift,
-				Models/Category.swift,
-				Models/Expense.swift,
-				Models/ExpenseCategory.swift,
-				Services/StorageService.swift,
-				Utils/CurrencyCode.swift,
-			);
-			target = 714E83162DBE3597005ED7BB /* InpensoWidgetExtensionExtension */;
-		};
-		714E833A2DBE37C2005ED7BB /* Exceptions for "iExpenseWidgetExtension" folder in "Inpenso" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				QuickAddConfigurationIntent.swift,
-			);
-			target = 714E82F22DBE3124005ED7BB /* Inpenso */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		714E82F52DBE3124005ED7BB /* iExpense */ = {
+		714E82F52DBE3124005ED7BB /* SaldoPositivo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				714E83342DBE3694005ED7BB /* Exceptions for "iExpense" folder in "InpensoWidgetExtensionExtension" target */,
-			);
-			path = iExpense;
+			path = SaldoPositivo;
 			sourceTree = "<group>";
 		};
-		714E831D2DBE3598005ED7BB /* iExpenseWidgetExtension */ = {
+		714E831D2DBE3598005ED7BB /* SaldoPositivoWidgetExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				714E833A2DBE37C2005ED7BB /* Exceptions for "iExpenseWidgetExtension" folder in "Inpenso" target */,
-				714E832E2DBE3599005ED7BB /* Exceptions for "iExpenseWidgetExtension" folder in "InpensoWidgetExtensionExtension" target */,
+				71A111112EAAAAAA00000001 /* Exceptions for "SaldoPositivoWidgetExtension" folder in "InpensoWidgetExtensionExtension" target */,
 			);
-			path = iExpenseWidgetExtension;
+			path = SaldoPositivoWidgetExtension;
+			sourceTree = "<group>";
+		};
+		71A111122EAAAAAA00000002 /* SaldoPositivo/Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SaldoPositivo/Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -120,9 +102,10 @@
 			isa = PBXGroup;
 			children = (
 				714E834C2DBE654D005ED7BB /* ProjectPlan.swift */,
-				714E833D2DBE39CE005ED7BB /* iExpenseWidgetExtensionExtension.entitlements */,
-				714E82F52DBE3124005ED7BB /* iExpense */,
-				714E831D2DBE3598005ED7BB /* iExpenseWidgetExtension */,
+				714E833D2DBE39CE005ED7BB /* SaldoPositivoWidgetExtensionExtension.entitlements */,
+				714E82F52DBE3124005ED7BB /* SaldoPositivo */,
+				71A111122EAAAAAA00000002 /* SaldoPositivo/Shared */,
+				714E831D2DBE3598005ED7BB /* SaldoPositivoWidgetExtension */,
 				714E83182DBE3597005ED7BB /* Frameworks */,
 				714E82F42DBE3124005ED7BB /* Products */,
 			);
@@ -164,12 +147,12 @@
 				714E832C2DBE3599005ED7BB /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				714E82F52DBE3124005ED7BB /* iExpense */,
+				714E82F52DBE3124005ED7BB /* SaldoPositivo */,
 			);
 			name = Inpenso;
 			packageProductDependencies = (
 			);
-			productName = iExpense;
+			productName = SaldoPositivo;
 			productReference = 714E82F32DBE3124005ED7BB /* Inpenso.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -186,12 +169,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				714E831D2DBE3598005ED7BB /* iExpenseWidgetExtension */,
+				714E831D2DBE3598005ED7BB /* SaldoPositivoWidgetExtension */,
+				71A111122EAAAAAA00000002 /* SaldoPositivo/Shared */,
 			);
 			name = InpensoWidgetExtensionExtension;
 			packageProductDependencies = (
 			);
-			productName = iExpenseWidgetExtensionExtension;
+			productName = SaldoPositivoWidgetExtensionExtension;
 			productReference = 714E83172DBE3597005ED7BB /* InpensoWidgetExtensionExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
@@ -203,7 +187,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1630;
-				LastUpgradeCheck = 2600;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					714E82F22DBE3124005ED7BB = {
 						CreatedOnToolsVersion = 16.3;
@@ -285,6 +269,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -350,6 +335,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -408,7 +394,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iExpense/iExpense.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SaldoPositivo/SaldoPositivo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T2CHW3D7N;
@@ -445,7 +431,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iExpense/iExpense.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SaldoPositivo/SaldoPositivo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T2CHW3D7N;
@@ -482,13 +468,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = iExpenseWidgetExtensionExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SaldoPositivoWidgetExtensionExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T2CHW3D7N;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iExpenseWidgetExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = iExpenseWidgetExtension;
+				INFOPLIST_FILE = SaldoPositivoWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SaldoPositivoWidgetExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -511,13 +497,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = iExpenseWidgetExtensionExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SaldoPositivoWidgetExtensionExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T2CHW3D7N;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iExpenseWidgetExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = iExpenseWidgetExtension;
+				INFOPLIST_FILE = SaldoPositivoWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SaldoPositivoWidgetExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (

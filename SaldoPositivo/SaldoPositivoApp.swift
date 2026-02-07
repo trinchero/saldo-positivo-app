@@ -2,7 +2,7 @@ import SwiftUI
 import Foundation
 
 @main
-struct iExpenseApp: App {
+struct SaldoPositivoApp: App {
     init() {
         // On app launch, ensure settings are synced to the shared UserDefaults
         syncSettingsToSharedDefaults()

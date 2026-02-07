@@ -1,5 +1,5 @@
-// iExpenseWidgetExtension.swift
-// iExpenseWidgetExtension
+// SaldoPositivoWidgetExtension.swift
+// SaldoPositivoWidgetExtension
 
 import WidgetKit
 import SwiftUI
@@ -160,7 +160,7 @@ struct ExpenseQuickAddProvider: AppIntentTimelineProvider {
 }
 
 // MARK: - Widget Views
-struct iExpenseWidgetEntryView: View {
+struct SaldoPositivoWidgetEntryView: View {
     var entry: ExpenseEntry
     @Environment(\.widgetFamily) var family
     let currencyCode = getAppCurrency()
@@ -375,16 +375,16 @@ struct iExpenseWidgetEntryView: View {
     
 }
 
-struct iExpenseWidgetExtension: Widget {
-    let kind: String = "iExpenseWidgetExtension"
+struct SaldoPositivoWidgetExtension: Widget {
+    let kind: String = "SaldoPositivoWidgetExtension"
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, provider: ExpenseQuickAddProvider()) { entry in
-            iExpenseWidgetEntryView(entry: entry)
+            SaldoPositivoWidgetEntryView(entry: entry)
                 .containerBackground(.widgetBackground, for: .widget)
         }
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
-        .configurationDisplayName("iExpense Tracker")
+        .configurationDisplayName("SaldoPositivo Tracker")
         .description("Track your monthly spending, budget progress, and top categories at a glance.")
     }
 }
@@ -398,7 +398,7 @@ extension ShapeStyle where Self == Color {
 
 // MARK: - Previews
 #Preview(as: .systemSmall) {
-    iExpenseWidgetExtension()
+    SaldoPositivoWidgetExtension()
 } timeline: {
     ExpenseEntry(
         date: .now,
@@ -415,7 +415,7 @@ extension ShapeStyle where Self == Color {
 }
 
 #Preview(as: .systemMedium) {
-    iExpenseWidgetExtension()
+    SaldoPositivoWidgetExtension()
 } timeline: {
     ExpenseEntry(
         date: .now,
@@ -432,7 +432,7 @@ extension ShapeStyle where Self == Color {
 }
 
 #Preview(as: .systemLarge) {
-    iExpenseWidgetExtension()
+    SaldoPositivoWidgetExtension()
 } timeline: {
     ExpenseEntry(
         date: .now,

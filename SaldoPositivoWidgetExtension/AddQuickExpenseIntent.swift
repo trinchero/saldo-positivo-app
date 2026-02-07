@@ -1,5 +1,5 @@
 // AddQuickExpenseIntent.swift
-// iExpenseWidgetExtension
+// SaldoPositivoWidgetExtension
 
 import AppIntents
 import Foundation

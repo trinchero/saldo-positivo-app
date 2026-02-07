@@ -75,4 +75,31 @@ extension Category {
             return .gray
         }
     }
+
+    var iconName: String {
+        switch self {
+        case .food:
+            return "cart.fill"
+        case .eatingOut:
+            return "fork.knife"
+        case .rent:
+            return "house.fill"
+        case .shopping:
+            return "bag.fill"
+        case .entertainment:
+            return "tv.fill"
+        case .transportation:
+            return "car.fill"
+        case .utilities:
+            return "bolt.fill"
+        case .subscriptions:
+            return "repeat"
+        case .healthcare:
+            return "heart.fill"
+        case .education:
+            return "book.fill"
+        case .others:
+            return "ellipsis"
+        }
+    }
 }
