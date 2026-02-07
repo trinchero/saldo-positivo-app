@@ -82,12 +82,7 @@ struct HomeView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .padding(6)
                     .colorMultiply(colorScheme == .light ? Color.green : Color.white)
-                    .background(
-                        Circle()
-                            .fill(Color(.secondarySystemBackground))
-                    )
                 
                 Spacer()
                 
