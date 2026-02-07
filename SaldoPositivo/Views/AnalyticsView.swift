@@ -53,6 +53,9 @@ struct AnalyticsView: View {
                 Text("Your monthly budget has been saved successfully.")
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToAnalyticsBudgetTab"))) { _ in
+            selectedTab = .budget
+        }
     }
 
     private var analyticsHeader: some View {

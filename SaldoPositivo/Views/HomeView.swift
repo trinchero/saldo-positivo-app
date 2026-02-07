@@ -221,7 +221,7 @@ struct HomeView: View {
                         .foregroundColor(.primary)
 
                     Button(action: {
-                        NotificationCenter.default.post(name: NSNotification.Name("SwitchToAnalyticsTab"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name("SwitchToAnalyticsBudgetTab"), object: nil)
                     }) {
                         HStack(spacing: 6) {
                             Image(systemName: "plus.circle.fill")

@@ -46,6 +46,9 @@ struct MainTabView: View {
             NotificationCenter.default.addObserver(forName: NSNotification.Name("SwitchToAnalyticsTab"), object: nil, queue: .main) { _ in
                 selectedTab = 1 // Switch to Analytics tab
             }
+            NotificationCenter.default.addObserver(forName: NSNotification.Name("SwitchToAnalyticsBudgetTab"), object: nil, queue: .main) { _ in
+                selectedTab = 1 // Switch to Analytics tab
+            }
         }
         .onChange(of: viewModel.expenses) {
             analyticsViewModel.updateExpenses(viewModel.expenses)
