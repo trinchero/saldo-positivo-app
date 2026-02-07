@@ -15,6 +15,12 @@ class ExpenseViewModel: ObservableObject {
                 self?.expenses = []
             }
             .store(in: &cancellables)
+        NotificationCenter.default.publisher(for: .walletDidChange)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.loadExpenses()
+            }
+            .store(in: &cancellables)
     }
     
     func addExpense(title: String, price: Double, date: Date, category: ExpenseCategory) -> Expense {

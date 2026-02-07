@@ -112,7 +112,6 @@ struct ExpensesListView: View {
                 VStack(spacing: 0) {
                     expensesHeader
                         .padding(.horizontal)
-                        .padding(.top, 4)
                     
                     // Summary Card
                     if !filteredExpenses.isEmpty {
@@ -369,7 +368,7 @@ struct ExpensesListView: View {
                 }
             }
         }
-        .frame(height: 72)
+        .frame(height: 88)
     }
 
     
@@ -574,6 +573,7 @@ struct ExpensesListView: View {
         viewModel: ExpenseViewModel(),
         analyticsViewModel: AnalyticsViewModel(expenses: [])
     )
+    .environmentObject(WalletContextViewModel())
 }
 
 // MARK: - Expense Row View

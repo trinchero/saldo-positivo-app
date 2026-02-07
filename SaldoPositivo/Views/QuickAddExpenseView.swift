@@ -4,6 +4,7 @@ import SwiftData
 struct QuickAddExpenseView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject private var walletContext: WalletContextViewModel
     @ObservedObject var viewModel: ExpenseViewModel
     let onShowFullForm: (() -> Void)?
     @Query private var customCategories: [CustomCategoryItem]
@@ -143,23 +144,20 @@ struct QuickAddExpenseView: View {
     }
 
     private var headerSection: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(step == .amountCategory
-                 ? NSLocalizedString("Amount, title & category", comment: "Amount, title & category step title")
-                 : NSLocalizedString("Details", comment: "Details step title"))
-                .font(.headline)
-            Text(step == .amountCategory
-                 ? NSLocalizedString("Enter amount, title, and choose a category.", comment: "Step 1 subtitle")
-                 : NSLocalizedString("Add date and optional notes.", comment: "Step 2 subtitle"))
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+        VStack(spacing: 6) {
+            if step == .amountCategory {
+                Text(walletContext.selectedWallet?.name ?? NSLocalizedString("Personal Wallet", comment: "Default wallet"))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.green)
+                    .lineLimit(1)
+            }
             Text(step == .amountCategory
                  ? NSLocalizedString("Step 1 of 2", comment: "Step 1 label")
                  : NSLocalizedString("Step 2 of 2", comment: "Step 2 label"))
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var dateSection: some View {

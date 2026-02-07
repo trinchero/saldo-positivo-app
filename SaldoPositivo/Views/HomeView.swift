@@ -4,7 +4,11 @@ import Charts
 struct HomeView: View {
     @ObservedObject var viewModel: ExpenseViewModel
     @ObservedObject var analyticsViewModel: AnalyticsViewModel
+    @EnvironmentObject private var walletContext: WalletContextViewModel
     @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("profile_first_name") private var profileFirstName: String = "Andrea"
+    @AppStorage("profile_last_name") private var profileLastName: String = "Trinchero"
+    @AppStorage("profile_image_data") private var profileImageData: Data = Data()
     @State private var showingAddExpense = false
     @State private var showingQuickAdd = false
     @State private var showRecentExpenses = false
@@ -14,23 +18,25 @@ struct HomeView: View {
     @State private var showingEditExpense = false
     @State private var ringProgress: Double = 0
     @State private var overBudgetPulse = false
+    @State private var showingManageWallets = false
+    @State private var showingProfile = false
     
     private let recentDaysToShow = 7
     private let headerHorizontalInset: CGFloat = 16
     private let headerHeight: CGFloat = 88
+    private let headerSideSlotWidth: CGFloat = 96
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
                     homeHeader
-                        .padding(.top, 4)
+                    walletSwitcherRow
 
                     VStack(spacing: 20) {
                         budgetSummaryCard
                             .padding(.top, 10)
                         recentSpendingCard
-                        categoryBreakdownCard
                         recentExpensesSection
                     }
                     .padding(.horizontal)
@@ -48,6 +54,17 @@ struct HomeView: View {
             }
             .sheet(item: $selectedExpenseToEdit) { expense in
                 EditExpenseView(viewModel: viewModel, expense: expense)
+            }
+            .sheet(isPresented: $showingManageWallets) {
+                NavigationView {
+                    ManageWalletsView()
+                }
+                .environmentObject(walletContext)
+            }
+            .sheet(isPresented: $showingProfile) {
+                NavigationView {
+                    ProfileView()
+                }
             }
             .onAppear {
                 // Animate cards when view appears with slight delay between each
@@ -82,32 +99,97 @@ struct HomeView: View {
                 }
             )
             
-            HStack {
+            HStack(spacing: 0) {
                 Image("SaldoLogo")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 84, height: 84)
                     .colorMultiply(colorScheme == .light ? Color.green : Color.white)
-                
+                    .frame(width: headerSideSlotWidth, alignment: .center)
+
                 Spacer()
-                
+
                 Button(action: {
-                    showingQuickAdd = true
+                    showingProfile = true
                 }) {
-                    HStack(spacing: 6) {
-                        Text(NSLocalizedString("Add", comment: "Add"))
-                            .fontWeight(.semibold)
+                    ZStack {
+                        Circle()
+                            .fill(Color(.secondarySystemBackground))
+                            .frame(width: 38, height: 38)
+
+                        if let avatarImage = profileAvatarImage {
+                            Image(uiImage: avatarImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 38, height: 38)
+                                .clipShape(Circle())
+                        } else {
+                            Text(profileInitials)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundColor(.primary)
+                        }
                     }
-                    .font(.callout)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(Capsule())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                    )
                 }
+                .frame(width: headerSideSlotWidth, alignment: .center)
             }
             .padding(.horizontal, headerHorizontalInset)
         }
         .frame(height: headerHeight)
+    }
+
+    private var profileInitials: String {
+        let first = profileFirstName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let last = profileLastName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let left = first.first.map(String.init) ?? ""
+        let right = last.first.map(String.init) ?? ""
+        let combined = (left + right).uppercased()
+        return combined.isEmpty ? "U" : combined
+    }
+
+    private var profileAvatarImage: UIImage? {
+        guard !profileImageData.isEmpty else { return nil }
+        return UIImage(data: profileImageData)
+    }
+
+    private var walletSwitcherRow: some View {
+        HStack {
+            WalletSwitcherView(onEditWalletsTap: {
+                showingManageWallets = true
+            })
+            Spacer()
+            addExpenseButton
+        }
+        .padding(.horizontal)
+    }
+
+    private var addExpenseButton: some View {
+        Button(action: {
+            HapticFeedback.impact(style: .light)
+            showingQuickAdd = true
+        }) {
+            HStack(spacing: 8) {
+                Image(systemName: "plus")
+                    .font(.subheadline.weight(.bold))
+                Text(NSLocalizedString("Add", comment: "Add"))
+                    .font(.headline.weight(.semibold))
+            }
+            .foregroundColor(.green)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(
+                Color(.secondarySystemBackground)
+            )
+            .clipShape(Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(Color.green.opacity(0.45), lineWidth: 1)
+            )
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.97, opacity: 0.96))
     }
     
     // MARK: - Recent Spending Card
@@ -685,4 +767,5 @@ private struct BudgetPill: View {
         viewModel: ExpenseViewModel(),
         analyticsViewModel: AnalyticsViewModel(expenses: [])
     )
+    .environmentObject(WalletContextViewModel())
 }

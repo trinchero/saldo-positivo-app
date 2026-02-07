@@ -8,32 +8,30 @@ struct MainTabView: View {
     @State private var selectedTab = 0
 
     var body: some View {
-        NavigationView {
-            TabView(selection: $selectedTab) {
-                HomeView(viewModel: viewModel, analyticsViewModel: analyticsViewModel)
-                    .tabItem {
-                        Label("Home", systemImage: "house.fill")
-                    }
-                    .tag(0)
+        TabView(selection: $selectedTab) {
+            HomeView(viewModel: viewModel, analyticsViewModel: analyticsViewModel)
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+                .tag(0)
 
-                AnalyticsView(analyticsViewModel: analyticsViewModel)
-                    .tabItem {
-                        Label("Analytics", systemImage: "chart.pie.fill")
-                    }
-                    .tag(1)
+            AnalyticsView(analyticsViewModel: analyticsViewModel)
+                .tabItem {
+                    Label("Analytics", systemImage: "chart.pie.fill")
+                }
+                .tag(1)
 
-                ExpensesListView(viewModel: viewModel, analyticsViewModel: analyticsViewModel)
-                    .tabItem {
-                        Label("Expenses", systemImage: "list.bullet.rectangle.portrait.fill")
-                    }
-                    .tag(2)
+            ExpensesListView(viewModel: viewModel, analyticsViewModel: analyticsViewModel)
+                .tabItem {
+                    Label("Expenses", systemImage: "list.bullet.rectangle.portrait.fill")
+                }
+                .tag(2)
 
-                SettingsView()
-                    .tabItem {
-                        Label("Account", systemImage: "gearshape.fill")
-                    }
-                    .tag(3)
-            }
+            SettingsView()
+                .tabItem {
+                    Label("Account", systemImage: "gearshape.fill")
+                }
+                .tag(3)
         }
         .preferredColorScheme(settingsViewModel.selectedTheme.colorScheme)
         .onAppear {
@@ -59,4 +57,6 @@ struct MainTabView: View {
 #Preview {
     MainTabView()
         .environmentObject(SettingsViewModel())
+        .environmentObject(AppSessionViewModel())
+        .environmentObject(WalletContextViewModel())
 }

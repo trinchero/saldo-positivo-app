@@ -163,8 +163,7 @@ class SettingsViewModel: ObservableObject {
     }
     
     func resetAllData(using context: ModelContext? = nil) {
-        StorageService.saveExpenses([])
-        StorageService.saveBudgets([:])
+        StorageService.clearAllWalletData()
 
         // Clear stored notes and related UI state
         let defaults = UserDefaults.standard

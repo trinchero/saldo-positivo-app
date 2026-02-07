@@ -4,10 +4,14 @@ import StoreKit
 
 struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsViewModel
+    @EnvironmentObject var sessionViewModel: AppSessionViewModel
+    @EnvironmentObject var walletContext: WalletContextViewModel
     @Environment(\.modelContext) private var modelContext
 
-    @AppStorage("profile_name") private var profileName: String = "Andrea"
+    @AppStorage("profile_first_name") private var profileFirstName: String = "Andrea"
+    @AppStorage("profile_last_name") private var profileLastName: String = "Trinchero"
     @AppStorage("profile_email") private var profileEmail: String = "andrea_trinchero@icloud.com"
+    @AppStorage("profile_image_data") private var profileImageData: Data = Data()
     @AppStorage("notifications_enabled") private var notificationsEnabled: Bool = true
     @AppStorage("faceid_enabled") private var faceIDEnabled: Bool = false
 
@@ -24,12 +28,12 @@ struct SettingsView: View {
     @State private var showProfileEditor = false
     @State private var showQRCode = false
     @State private var showResetPasswordInfo = false
-    @State private var showLogoutInfo = false
 
     var body: some View {
         NavigationView {
             Form {
                 accountSection
+                walletsSection
                 preferencesSection
                 appearanceSection
                 dataManagementSection
@@ -44,7 +48,7 @@ struct SettingsView: View {
                 shareSheet
             }
             .sheet(isPresented: $showProfileEditor) {
-                ProfileEditorView(name: $profileName, email: $profileEmail)
+                ProfileEditorView(firstName: $profileFirstName, lastName: $profileLastName, email: $profileEmail)
             }
             .sheet(isPresented: $showQRCode) {
                 QRCodeSheetView(payload: profileEmail)
@@ -80,11 +84,6 @@ struct SettingsView: View {
             } message: {
                 Text("Password reset will be available after backend authentication is enabled.")
             }
-            .alert("Logout", isPresented: $showLogoutInfo) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text("Logout will be enabled when authentication is active.")
-            }
         }
         .onChange(of: showAuthorLink) { _, newValue in
             if newValue, let url = URL(string: "https://www.trincheroandrea.com") {
@@ -97,12 +96,23 @@ struct SettingsView: View {
     private var accountSection: some View {
         Section {
             HStack(spacing: 12) {
-                Image(systemName: "person.crop.circle.fill")
-                    .font(.system(size: 42))
-                    .foregroundStyle(.secondary)
+                Group {
+                    if let avatar = profileAvatarImage {
+                        Image(uiImage: avatar)
+                            .resizable()
+                            .scaledToFill()
+                    } else {
+                        Image(systemName: "person.crop.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(width: 42, height: 42)
+                .clipShape(Circle())
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(profileName)
+                    Text(profileDisplayName)
                         .font(.headline)
                     Text(profileEmail)
                         .font(.subheadline)
@@ -125,6 +135,25 @@ struct SettingsView: View {
                     Spacer()
                     Label("Scan Code", systemImage: "qrcode.viewfinder")
                     Spacer()
+                }
+            }
+        }
+    }
+
+    private var walletsSection: some View {
+        Section(header: Text("Wallets")) {
+            NavigationLink {
+                ManageWalletsView()
+            } label: {
+                Label("Manage Wallets", systemImage: "wallet.pass")
+            }
+
+            if let selectedWallet = walletContext.selectedWallet {
+                HStack {
+                    Text("Current Wallet")
+                    Spacer()
+                    Text(selectedWallet.name)
+                        .foregroundColor(.secondary)
                 }
             }
         }
@@ -188,7 +217,9 @@ struct SettingsView: View {
     private var logoutSection: some View {
         Section {
             Button(role: .destructive) {
-                showLogoutInfo = true
+                Task {
+                    await sessionViewModel.signOut()
+                }
             } label: {
                 HStack {
                     Spacer()
@@ -381,20 +412,34 @@ struct SettingsView: View {
             SKStoreReviewController.requestReview(in: scene)
         }
     }
+
+    private var profileDisplayName: String {
+        let fullName = "\(profileFirstName) \(profileLastName)"
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return fullName.isEmpty ? "User" : fullName
+    }
+
+    private var profileAvatarImage: UIImage? {
+        guard !profileImageData.isEmpty else { return nil }
+        return UIImage(data: profileImageData)
+    }
 }
 
 private struct ProfileEditorView: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var name: String
+    @Binding var firstName: String
+    @Binding var lastName: String
     @Binding var email: String
 
-    @State private var tempName: String = ""
+    @State private var tempFirstName: String = ""
+    @State private var tempLastName: String = ""
     @State private var tempEmail: String = ""
 
     var body: some View {
         NavigationView {
             Form {
-                TextField("Name", text: $tempName)
+                TextField("First Name", text: $tempFirstName)
+                TextField("Last Name", text: $tempLastName)
                 TextField("Email", text: $tempEmail)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
@@ -407,7 +452,8 @@ private struct ProfileEditorView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") {
-                        name = tempName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? name : tempName
+                        firstName = tempFirstName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? firstName : tempFirstName
+                        lastName = tempLastName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? lastName : tempLastName
                         email = tempEmail.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? email : tempEmail
                         dismiss()
                     }
@@ -415,7 +461,8 @@ private struct ProfileEditorView: View {
             }
         }
         .onAppear {
-            tempName = name
+            tempFirstName = firstName
+            tempLastName = lastName
             tempEmail = email
         }
     }
@@ -530,4 +577,6 @@ struct ShareSheet: UIViewControllerRepresentable {
 #Preview {
     SettingsView()
         .environmentObject(SettingsViewModel())
+        .environmentObject(AppSessionViewModel())
+        .environmentObject(WalletContextViewModel())
 }

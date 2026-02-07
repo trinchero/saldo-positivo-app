@@ -11,7 +11,6 @@ struct AnalyticsView: View {
             VStack(spacing: 0) {
                 analyticsHeader
                     .padding(.horizontal)
-                    .padding(.top, 4)
 
                 // Tab Selection
                 AnalyticsTabSelector(selectedTab: $selectedTab)
@@ -61,7 +60,7 @@ struct AnalyticsView: View {
                 Spacer()
             }
         }
-        .frame(height: 72)
+        .frame(height: 88)
     }
     
     // MARK: - Overview Tab Content
@@ -489,4 +488,5 @@ struct AnalyticsView: View {
 
 #Preview {
     AnalyticsView(analyticsViewModel: AnalyticsViewModel(expenses: []))
+        .environmentObject(WalletContextViewModel())
 }

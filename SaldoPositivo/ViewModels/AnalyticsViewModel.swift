@@ -110,6 +110,13 @@ class AnalyticsViewModel: ObservableObject {
                 self?.handleDataReset()
             }
             .store(in: &cancellables)
+        NotificationCenter.default.publisher(for: .walletDidChange)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.monthlyBudgets = StorageService.loadBudgets()
+                self?.calculateAnalytics()
+            }
+            .store(in: &cancellables)
     }
     
     func updateExpenses(_ expenses: [Expense]) {
